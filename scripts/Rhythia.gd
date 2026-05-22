@@ -1767,6 +1767,10 @@ func register_colorsets():
 		[ Color("#008cff"), Color("#ed3434"), Color("#10bd0d"), Color("#ffb300") ],
 		"ssp_wii", "Wii Players", "balt"
 	))
+	registry_colorset.add_item(ColorSet.new(
+		[ Color("#ffb3e1"), Color("#ffffff") ],
+		"ssp_brecken", "Brecken's Choice", "Brecken"
+	))
 	
 func register_worlds():
 	# idI:String,nameI:String,pathI:String,creatorI:String="Unknown"
