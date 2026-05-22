@@ -20,11 +20,6 @@ func _ready():
 		$Camera.current = true
 		$AltCam.current = false
 	
-	if Rhythia.mod_flashlight:
-		$Game/Mask.visible = true
-	else:
-		$Game/Mask.visible = false # should already be false but just to ensure that it is
-	
 	# lacunella
 	if Rhythia.is_lacunella_enabled():
 		$Game/Avatar/Head/Accessories/CubellaHair.visible = true

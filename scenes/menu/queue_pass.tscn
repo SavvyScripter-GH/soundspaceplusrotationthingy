@@ -10,8 +10,6 @@
 [ext_resource path="res://scripts/ui/menu/queue/QueueSongInfo.gd" type="Script" id=8]
 [ext_resource path="res://scripts/ui/menu/queue/QueueEndInfo.gd" type="Script" id=9]
 
-
-
 [sub_resource type="DynamicFont" id=135]
 use_filter = true
 font_data = ExtResource( 6 )

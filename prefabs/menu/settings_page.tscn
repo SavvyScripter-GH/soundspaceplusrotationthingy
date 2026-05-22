@@ -1,4 +1,4 @@
-[gd_scene load_steps=92 format=2]
+[gd_scene load_steps=91 format=2]
 
 [ext_resource path="res://uitheme.tres" type="Theme" id=1]
 [ext_resource path="res://assets/font/Lato/Lato-Regular.ttf" type="DynamicFontData" id=2]
@@ -8,7 +8,6 @@
 [ext_resource path="res://scripts/ui/settings/NoteHitboxSize.gd" type="Script" id=6]
 [ext_resource path="res://addons/native_dialogs/bin/native_dialog_save_file.gdns" type="Script" id=7]
 [ext_resource path="res://scripts/ui/settings/VolumeSetting.gd" type="Script" id=8]
-[ext_resource path="res://scripts/ui/settings/HitEffect.gd" type="Script" id=9]
 [ext_resource path="res://scripts/ui/settings/CursorSpin.gd" type="Script" id=10]
 [ext_resource path="res://scripts/ui/settings/WorldSel.gd" type="Script" id=11]
 [ext_resource path="res://scripts/ui/settings/EdgeBuffer.gd" type="Script" id=12]
@@ -34,7 +33,6 @@
 [ext_resource path="res://assets/font/NotoColorEmoji.ttf" type="DynamicFontData" id=32]
 [ext_resource path="res://scripts/ui/settings/UIParallax.gd" type="Script" id=33]
 [ext_resource path="res://scripts/ui/settings/GridParallax.gd" type="Script" id=34]
-[ext_resource path="res://scripts/ui/settings/MissEffect.gd" type="Script" id=35]
 [ext_resource path="res://scripts/ui/settings/ArchiveConvert.gd" type="Script" id=36]
 [ext_resource path="res://scripts/ui/settings/FadeLength.gd" type="Script" id=37]
 [ext_resource path="res://assets/images/ui/placeholder.jpg" type="Texture" id=38]
@@ -155,6 +153,13 @@ use_filter = true
 font_data = ExtResource( 2 )
 fallback/0 = ExtResource( 32 )
 fallback/1 = ExtResource( 3 )
+
+[sub_resource type="GDScript" id=61]
+script/source = "extends MenuButton
+
+var effects:Array = []
+var current_sel:int
+"
 
 [sub_resource type="StyleBoxEmpty" id=50]
 
@@ -1253,18 +1258,18 @@ custom_styles/separator = SubResource( 55 )
 [node name="Notes" type="VBoxContainer" parent="TabContainer/Notes"]
 margin_top = 30.0
 margin_right = 1280.0
-margin_bottom = 774.0
+margin_bottom = 638.0
 
 [node name="Group" type="MarginContainer" parent="TabContainer/Notes/Notes"]
 margin_right = 1280.0
-margin_bottom = 744.0
+margin_bottom = 608.0
 mouse_filter = 1
 custom_constants/margin_left = 66
 
 [node name="H" type="GridContainer" parent="TabContainer/Notes/Notes/Group"]
 margin_left = 66.0
 margin_right = 1280.0
-margin_bottom = 744.0
+margin_bottom = 608.0
 
 [node name="ColorSet2" type="VBoxContainer" parent="TabContainer/Notes/Notes/Group/H"]
 margin_right = 1214.0
@@ -1788,147 +1793,10 @@ margin_bottom = 426.0
 rect_min_size = Vector2( 0, 10 )
 custom_styles/separator = SubResource( 55 )
 
-[node name="HitRipple" type="Control" parent="TabContainer/Notes/Notes/Group/H"]
+[node name="ApproachSquares" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
 margin_top = 430.0
 margin_right = 1214.0
-margin_bottom = 462.0
-rect_min_size = Vector2( 200, 32 )
-mouse_filter = 1
-
-[node name="HitEffect" type="Button" parent="TabContainer/Notes/Notes/Group/H/HitRipple"]
-margin_right = 200.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 200, 32 )
-rect_pivot_offset = Vector2( 115, 16 )
-hint_tooltip = "this image is used by hit effects with an asterisk (*) in their name"
-theme = ExtResource( 1 )
-custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_color_hover = Color( 0, 0, 0, 1 )
-custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
-text = "Click to replace"
-script = ExtResource( 45 )
-target = "hit"
-default_image = ExtResource( 13 )
-
-[node name="ImgPreview" type="TextureRect" parent="TabContainer/Notes/Notes/Group/H/HitRipple/HitEffect"]
-margin_left = 204.0
-margin_right = 236.0
-margin_bottom = 32.0
-texture = ExtResource( 13 )
-expand = true
-stretch_mode = 1
-
-[node name="Label" type="Label" parent="TabContainer/Notes/Notes/Group/H/HitRipple/HitEffect"]
-margin_left = 280.0
-margin_top = 5.0
-margin_right = 390.0
-margin_bottom = 25.0
-hint_tooltip = "this image is used by hit effects with an asterisk (*) in their name"
-focus_mode = 2
-mouse_filter = 1
-theme = ExtResource( 1 )
-custom_colors/font_color = Color( 0.898039, 0.94902, 1, 1 )
-custom_fonts/font = SubResource( 3 )
-text = "Hit Effect Image"
-valign = 1
-
-[node name="Clear" type="Button" parent="TabContainer/Notes/Notes/Group/H/HitRipple/HitEffect"]
-margin_left = 241.0
-margin_right = 273.0
-margin_bottom = 32.0
-theme = ExtResource( 1 )
-custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_color_hover = Color( 0, 0, 0, 1 )
-custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
-disabled = true
-icon = ExtResource( 4 )
-expand_icon = true
-
-[node name="HitEffect" type="HBoxContainer" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 466.0
-margin_right = 1214.0
-margin_bottom = 498.0
-hint_tooltip = "effect played when you hit a note"
-
-[node name="Effect" type="MenuButton" parent="TabContainer/Notes/Notes/Group/H/HitEffect"]
-margin_right = 200.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 200, 32 )
-hint_tooltip = "effect played when you hit a note"
-focus_mode = 2
-theme = ExtResource( 1 )
-custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_colors/font_color_hover = Color( 0, 0, 0, 1 )
-custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
-text = "effect name here"
-flat = false
-align = 0
-script = ExtResource( 9 )
-
-[node name="Label" type="Label" parent="TabContainer/Notes/Notes/Group/H/HitEffect"]
-margin_left = 204.0
-margin_top = 6.0
-margin_right = 269.0
-margin_bottom = 26.0
-focus_mode = 2
-theme = ExtResource( 1 )
-custom_colors/font_color = Color( 0.898039, 0.94902, 1, 1 )
-custom_fonts/font = SubResource( 3 )
-text = "Hit Effect"
-align = 2
-valign = 1
-
-[node name="ShowHitEffect" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 502.0
-margin_right = 1214.0
-margin_bottom = 530.0
-rect_min_size = Vector2( 0, 28 )
-hint_tooltip = "plays your selected hit effect when you hit a note"
-mouse_filter = 1
-theme = ExtResource( 1 )
-custom_colors/font_color_disabled = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_focus = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_fonts/font = SubResource( 4 )
-pressed = true
-action_mode = 0
-text = "Show Hit Effect"
-flat = true
-script = ExtResource( 54 )
-target = "show_hit_effect"
-
-[node name="HitEffectCursor" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 534.0
-margin_right = 1214.0
-margin_bottom = 562.0
-rect_min_size = Vector2( 0, 28 )
-hint_tooltip = "hit effects will appear at the center of notes when this is off"
-mouse_filter = 1
-theme = ExtResource( 1 )
-custom_colors/font_color_disabled = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_focus = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_fonts/font = SubResource( 4 )
-pressed = true
-action_mode = 0
-text = "Hit Effect at Cursor"
-flat = true
-script = ExtResource( 54 )
-target = "hit_effect_at_cursor"
-
-[node name="ApproachSquares" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 566.0
-margin_right = 1214.0
-margin_bottom = 594.0
+margin_bottom = 458.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "squares on the grid that show note approach - similar to the circles in osu!"
 mouse_filter = 1
@@ -1947,9 +1815,9 @@ script = ExtResource( 54 )
 target = "note_visual_approach"
 
 [node name="ApproachFollow" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 598.0
+margin_top = 462.0
 margin_right = 1214.0
-margin_bottom = 626.0
+margin_bottom = 490.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "makes it so the approach squares lock to the note"
 mouse_filter = 1
@@ -1968,16 +1836,16 @@ script = ExtResource( 54 )
 target = "visual_approach_follow"
 
 [node name="SEPARATOR4" type="HSeparator" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 630.0
+margin_top = 494.0
 margin_right = 1214.0
-margin_bottom = 640.0
+margin_bottom = 504.0
 rect_min_size = Vector2( 0, 10 )
 custom_styles/separator = SubResource( 55 )
 
 [node name="MissRipple" type="Control" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 644.0
+margin_top = 508.0
 margin_right = 1214.0
-margin_bottom = 676.0
+margin_bottom = 540.0
 rect_min_size = Vector2( 200, 32 )
 mouse_filter = 1
 
@@ -2036,9 +1904,9 @@ icon = ExtResource( 4 )
 expand_icon = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 680.0
+margin_top = 544.0
 margin_right = 1214.0
-margin_bottom = 712.0
+margin_bottom = 576.0
 hint_tooltip = "hit effect but when you don't"
 
 [node name="Effect" type="MenuButton" parent="TabContainer/Notes/Notes/Group/H/HBoxContainer"]
@@ -2055,7 +1923,7 @@ custom_colors/font_color_pressed = Color( 0, 0, 0, 1 )
 text = "effect name here"
 flat = false
 align = 0
-script = ExtResource( 35 )
+script = SubResource( 61 )
 
 [node name="Label" type="Label" parent="TabContainer/Notes/Notes/Group/H/HBoxContainer"]
 margin_left = 204.0
@@ -2071,9 +1939,9 @@ align = 2
 valign = 1
 
 [node name="ShowMissEffect" type="CheckBox" parent="TabContainer/Notes/Notes/Group/H"]
-margin_top = 716.0
+margin_top = 580.0
 margin_right = 1214.0
-margin_bottom = 744.0
+margin_bottom = 608.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "replace \"hit\" with \"miss\" in the description of the setting above this one"
 mouse_filter = 1
@@ -2093,9 +1961,9 @@ script = ExtResource( 54 )
 target = "show_miss_effect"
 
 [node name="SEPARATOR" type="HSeparator" parent="TabContainer/Notes"]
-margin_top = 774.0
+margin_top = 638.0
 margin_right = 1280.0
-margin_bottom = 804.0
+margin_bottom = 668.0
 rect_min_size = Vector2( 0, 10 )
 custom_constants/separation = 30
 custom_styles/separator = SubResource( 55 )
@@ -2816,46 +2684,22 @@ custom_styles/separator = SubResource( 55 )
 [node name="UI" type="VBoxContainer" parent="TabContainer/UI"]
 margin_top = 30.0
 margin_right = 1280.0
-margin_bottom = 562.0
+margin_bottom = 530.0
 
 [node name="Group" type="MarginContainer" parent="TabContainer/UI/UI"]
 margin_right = 1280.0
-margin_bottom = 532.0
+margin_bottom = 500.0
 mouse_filter = 1
 custom_constants/margin_left = 66
 
 [node name="H" type="GridContainer" parent="TabContainer/UI/UI/Group"]
 margin_left = 66.0
 margin_right = 1280.0
-margin_bottom = 532.0
-
-[node name="Grid" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_right = 170.0
-margin_bottom = 28.0
-rect_min_size = Vector2( 0, 28 )
-hint_tooltip = "turns the note grid on or off"
-theme = ExtResource( 1 )
-custom_colors/font_color_disabled = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_focus = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_hover = Color( 0.898039, 0.94902, 1, 1 )
-custom_colors/font_color_pressed = Color( 0.898039, 0.94902, 1, 1 )
-custom_fonts/font = SubResource( 4 )
-pressed = true
-action_mode = 0
-text = "Enable Grid"
-flat = true
-script = ExtResource( 54 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-target = "enable_grid"
+margin_bottom = 500.0
 
 [node name="Border" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 32.0
 margin_right = 170.0
-margin_bottom = 60.0
+margin_bottom = 28.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "turns the note grid border on or off"
 theme = ExtResource( 1 )
@@ -2877,9 +2721,9 @@ __meta__ = {
 target = "enable_border"
 
 [node name="SimpleHud" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 64.0
+margin_top = 32.0
 margin_right = 170.0
-margin_bottom = 92.0
+margin_bottom = 60.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "changes the side panels to show only your misses and pauses"
 theme = ExtResource( 1 )
@@ -2901,9 +2745,9 @@ __meta__ = {
 target = "simple_hud"
 
 [node name="LetterGrade" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 96.0
+margin_top = 64.0
 margin_right = 170.0
-margin_bottom = 124.0
+margin_bottom = 92.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "shows a letter grade (SS, S, A, etc.) above your accuracy"
 theme = ExtResource( 1 )
@@ -2925,9 +2769,9 @@ __meta__ = {
 target = "show_letter_grade"
 
 [node name="Config" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 128.0
+margin_top = 96.0
 margin_right = 170.0
-margin_bottom = 156.0
+margin_bottom = 124.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "shows your approach rate, hit window, and camera config at the start of songs (to show off)"
 theme = ExtResource( 1 )
@@ -2949,9 +2793,9 @@ __meta__ = {
 target = "show_config"
 
 [node name="DisplayTrueCombo" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 160.0
+margin_top = 128.0
 margin_right = 170.0
-margin_bottom = 188.0
+margin_bottom = 156.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "displays the real value of your combo behind the grid"
 theme = ExtResource( 1 )
@@ -2970,9 +2814,9 @@ script = ExtResource( 54 )
 target = "display_true_combo"
 
 [node name="ShowHealth" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 192.0
+margin_top = 160.0
 margin_right = 170.0
-margin_bottom = 220.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "i don't understand why you'd turn this off but people have asked so here you go"
 theme = ExtResource( 1 )
@@ -2991,9 +2835,9 @@ script = ExtResource( 54 )
 target = "show_hp_bar"
 
 [node name="ShowTimer" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 224.0
+margin_top = 192.0
 margin_right = 170.0
-margin_bottom = 252.0
+margin_bottom = 220.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "tells you how far into a song you are (and the name of the song)"
 theme = ExtResource( 1 )
@@ -3012,9 +2856,9 @@ script = ExtResource( 54 )
 target = "show_timer"
 
 [node name="AccuracyBar" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 256.0
+margin_top = 224.0
 margin_right = 170.0
-margin_bottom = 284.0
+margin_bottom = 252.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "shows your accuracy on a progress bar"
 theme = ExtResource( 1 )
@@ -3033,9 +2877,9 @@ script = ExtResource( 54 )
 target = "show_accuracy_bar"
 
 [node name="ShowLeftPanel" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 288.0
+margin_top = 256.0
 margin_right = 170.0
-margin_bottom = 316.0
+margin_bottom = 284.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "contains: combo meter, pause counter, accuracy"
 theme = ExtResource( 1 )
@@ -3054,9 +2898,9 @@ script = ExtResource( 54 )
 target = "show_left_panel"
 
 [node name="ShowRightPanel" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 320.0
+margin_top = 288.0
 margin_right = 170.0
-margin_bottom = 348.0
+margin_bottom = 316.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "contains: framerate, miss counter, notes hit / total notes"
 theme = ExtResource( 1 )
@@ -3075,9 +2919,9 @@ script = ExtResource( 54 )
 target = "show_right_panel"
 
 [node name="ShowCursor" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 352.0
+margin_top = 320.0
 margin_right = 170.0
-margin_bottom = 380.0
+margin_bottom = 348.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "to prevent issues where people forget they turned the cursor off, this doesn't save"
 theme = ExtResource( 1 )
@@ -3096,9 +2940,9 @@ script = ExtResource( 54 )
 target = "show_cursor"
 
 [node name="AttachHpToGrid" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 384.0
+margin_top = 352.0
 margin_right = 170.0
-margin_bottom = 412.0
+margin_bottom = 380.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "attaches your health bar + modifiers to the note grid"
 theme = ExtResource( 1 )
@@ -3116,9 +2960,9 @@ script = ExtResource( 54 )
 target = "attach_hp_to_grid"
 
 [node name="AttachTimerToGrid" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 416.0
+margin_top = 384.0
 margin_right = 170.0
-margin_bottom = 444.0
+margin_bottom = 412.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "attaches the timer + song name to the note grid"
 theme = ExtResource( 1 )
@@ -3136,9 +2980,9 @@ script = ExtResource( 54 )
 target = "attach_timer_to_grid"
 
 [node name="Score Popup" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 448.0
+margin_top = 416.0
 margin_right = 170.0
-margin_bottom = 476.0
+margin_bottom = 444.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "show the score you get from hitting a note at the bottom of the grid"
 theme = ExtResource( 1 )
@@ -3157,9 +3001,9 @@ script = ExtResource( 54 )
 target = "score_popup"
 
 [node name="BillboardScore2" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 480.0
+margin_top = 448.0
 margin_right = 170.0
-margin_bottom = 508.0
+margin_bottom = 476.0
 rect_min_size = Vector2( 0, 28 )
 hint_tooltip = "apply a billboard effect to the score popup"
 theme = ExtResource( 1 )
@@ -3210,9 +3054,9 @@ valign = 1
 clip_text = true
 
 [node name="ExpandHUDonHR" type="CheckBox" parent="TabContainer/UI/UI/Group/H"]
-margin_top = 512.0
+margin_top = 480.0
 margin_right = 170.0
-margin_bottom = 532.0
+margin_bottom = 500.0
 hint_tooltip = "expands the HUD when using Hard Rock"
 theme = ExtResource( 1 )
 custom_colors/font_color_disabled = Color( 0.898039, 0.94902, 1, 1 )
@@ -3230,9 +3074,9 @@ script = ExtResource( 54 )
 target = "expand_hud_onhr"
 
 [node name="UIColor" type="VBoxContainer" parent="TabContainer/UI"]
-margin_top = 562.0
+margin_top = 530.0
 margin_right = 1280.0
-margin_bottom = 2194.0
+margin_bottom = 2162.0
 
 [node name="Group" type="MarginContainer" parent="TabContainer/UI/UIColor"]
 margin_right = 1280.0
@@ -4671,9 +4515,9 @@ align = 2
 valign = 1
 
 [node name="SEPARATOR" type="HSeparator" parent="TabContainer/UI"]
-margin_top = 2194.0
+margin_top = 2162.0
 margin_right = 1280.0
-margin_bottom = 2224.0
+margin_bottom = 2192.0
 rect_min_size = Vector2( 0, 10 )
 custom_constants/separation = 30
 custom_styles/separator = SubResource( 55 )

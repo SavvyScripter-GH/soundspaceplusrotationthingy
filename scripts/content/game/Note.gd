@@ -144,7 +144,7 @@ func setup(color:Color):
 		chaos_offset = Vector2(rng.randf_range(-1,1),rng.randf_range(-1,1)).normalized() * 2
 		real_position = Vector2(transform.origin.x,transform.origin.y)
 	
-	if Rhythia.mod_earthquake:
+	if Rhythia.mod_360:
 		var rng = get_parent().earthquake_rng
 		earthquake_offset = Vector2(rng.randf_range(-1,1),rng.randf_range(-1,1)).normalized() * 2
 		real_position = Vector2(transform.origin.x,transform.origin.y)

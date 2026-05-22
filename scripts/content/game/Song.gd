@@ -1111,7 +1111,6 @@ func convert_to_sspm(upgrade:bool=false):
 	var err:int
 	var markers = read_markers()
 	
-	
 	var map_has_cover = (has_cover and self.cover and (cover.get_height() + cover.get_width()) >= 9)
 	
 	var map_has_music:bool = false
@@ -1122,7 +1121,6 @@ func convert_to_sspm(upgrade:bool=false):
 	if music_buffer:
 		map_has_music = true
 		music_buffer_length = music_buffer.size()
-	
 	
 	var author_regex = RegEx.new()
 	author_regex.compile("(?:^|\\g'2')(.*?)(?=$|\\g'2')(?(DEFINE)([,\\s]*(?>(?<=[,\\s])&(?=\\s)|(?<=[,\\s])and(?=\\s)|\\+)\\s*|,\\s*+))")
@@ -1136,11 +1134,6 @@ func convert_to_sspm(upgrade:bool=false):
 	# Open the file for writing
 	err = file.open(path,File.WRITE_READ)
 	if err != OK: return "file.open errored - code " + String(err)
-	
-	
-	
-	
-	
 	
 	# This format has documentation:
 	# https://github.com/basils-garden/types/blob/sspm-v2-draft/sspm/v2.md
@@ -1185,7 +1178,6 @@ func convert_to_sspm(upgrade:bool=false):
 	# Position: 0x2f
 	file.store_8(0) # Does this map require at least one mod?
 	
-	
 	# Pointers
 	# We will to return to these values later.
 	
@@ -1197,7 +1189,6 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	# Position: 0x38
 	file.store_64(0) # Byte length of the custom data block
-	
 	
 	var point_ab = file.get_position()
 	print("ab: %s" % String(point_ab))
@@ -1218,7 +1209,6 @@ func convert_to_sspm(upgrade:bool=false):
 	# Position: 0x58
 	file.store_64(0) # Byte length of the cover block (0 if not present)
 	
-	
 	var point_mdb = file.get_position()
 	print("mdb: %s" % String(point_mdb))
 	
@@ -1228,7 +1218,6 @@ func convert_to_sspm(upgrade:bool=false):
 	# Position: 0x68
 	file.store_64(0) # Byte length of the marker definitions block
 	
-	
 	var point_mb = file.get_position()
 	print("mb: %s" % String(point_mb))
 	
@@ -1237,7 +1226,6 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	# Position: 0x78
 	file.store_64(0) # Byte length of the marker block
-	
 	
 	# Strings
 	var start:int = file.get_position()

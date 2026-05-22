@@ -5,7 +5,6 @@
 [ext_resource path="res://vr/MenuPointer.gd" type="Script" id=3]
 [ext_resource path="res://vr/vrmenu.gd" type="Script" id=4]
 
-
 [sub_resource type="Environment" id=5]
 background_mode = 1
 

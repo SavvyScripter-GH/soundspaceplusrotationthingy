@@ -527,7 +527,7 @@ func get_files_recursive(
 ):
 	var a = OS.get_ticks_usec()
 	if pause_amt != -1: yield(get_tree(),"idle_frame")
-	print("-- start recurse --")
+	#print("-- start recurse --")
 	print(paths)
 	var dir:Directory = Directory.new()
 	
@@ -543,7 +543,7 @@ func get_files_recursive(
 		layer += 1
 		
 		if layer > max_layers:
-			print("recursed too deep! stopping!")
+			#print("recursed too deep! stopping!")
 			break
 		
 		i += 1
@@ -590,7 +590,7 @@ func get_files_recursive(
 				print("failed to change to folder %s (error code %s)" % [cpath,err])
 			
 	
-	print("-- end recurse - took %s usec --" % [Globals.comma_sep(OS.get_ticks_usec() - a)])
+	#print("-- end recurse - took %s usec --" % [Globals.comma_sep(OS.get_ticks_usec() - a)])
 	if pause_amt != -1:
 		emit_signal("recurse_result",{files = files, folders = folders})
 	return {files = files, folders = folders}

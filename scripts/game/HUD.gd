@@ -390,9 +390,6 @@ func _ready():
 	if !Rhythia.show_config:
 		$ConfigHud.visible = false
 	
-	if !Rhythia.enable_grid:
-		Spawn.get_node("Inner").visible = false
-	
 	# --------------------------------------------- making this a setting cuz fog wants to lol
 
 	if Rhythia.mod_hardrock and Rhythia.expand_hud_onhr:
@@ -403,7 +400,6 @@ func _ready():
 			$EnergyHud,
 			$ComboHud,
 		]
-		Spawn.get_node("Inner").scale *= 1.35
 		Spawn.get_node("Outer").scale *= 1.35
 		$TimerHud.transform.origin += Vector3(0, 0.385, 0)
 		$LeftHud.transform.origin += Vector3(-0.50, 0, 0)
@@ -506,7 +502,7 @@ func _ready():
 	if Rhythia.mod_nearsighted: mods.append("Nearsight")
 	if Rhythia.mod_chaos: mods.append(tr("Chaos"))
 	if Rhythia.mod_earthquake: mods.append(tr("Earthquake"))
-	if Rhythia.mod_flashlight: mods.append(tr("Flashlight"))
+	if Rhythia.mod_360: mods.append(tr("360"))
 	if Rhythia.mod_hardrock: mods.append(tr("Hard Rock"))
 	if Rhythia.invert_mouse: mods.append(tr("Mouse Inverted"))
 	for i in range(mods.size()):

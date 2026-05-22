@@ -14,7 +14,7 @@ dest_files=[ "res://.import/skybox.png-3facf0a0e149280186ee9c5b101d093e.stex" ]
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

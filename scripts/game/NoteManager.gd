@@ -23,11 +23,7 @@ var noteNodes:Array = []
 var noteCache:Array = []
 var noteQueue:Array = []
 var colors:Array = Rhythia.selected_colorset.colors
-var hitEffect:Spatial = load(Rhythia.selected_hit_effect.path).instance()
-var missEffect:Spatial = load(Rhythia.selected_miss_effect.path).instance()
 var scoreEffect:Spatial = load("res://assets/notefx/score/score.tscn").instance()
-var hit_id:String = Rhythia.selected_hit_effect.id
-var miss_id:String = Rhythia.selected_miss_effect.id
 var chaos_rng:RandomNumberGenerator = RandomNumberGenerator.new()
 var earthquake_rng:RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -41,7 +37,6 @@ var prev_ms:float = -100000
 var next_ms:float = 0
 
 var last_cursor_position:Vector3 = Vector3(-1,1,0)
-
 
 # new mmi note stuff
 var fade_in_enabled:bool = true
@@ -114,9 +109,14 @@ func note_reposition(i:int):
 			nt.origin.x = real_position.x + (chaos_offset.x * v)	
 			nt.origin.y = real_position.y + (chaos_offset.y * v)
 		
-		if Rhythia.mod_earthquake:
+		if Rhythia.mod_360:
 			nt.origin = Vector3(real_position.x - 1, real_position.y + 1, -current_dist)
-
+		
+		if Rhythia.mod_earthquake:
+			var rcoord = Vector2(earthquake_rng.randf_range(-0.25,0.25),earthquake_rng.randf_range(-0.25,0.25))
+			nt.origin.x = real_position.x + (rcoord.x * (current_dist * 0.1))
+			nt.origin.y = real_position.y + (rcoord.y * (current_dist * 0.1))
+			
 #		if Rhythia.note_visual_approach:
 #			$Approach.opacity = 1 - (current_dist / Rhythia.get("spawn_distance"))
 #
@@ -183,29 +183,21 @@ func note_reposition(i:int):
 		return false#!(state == Globals.NSTATE_ACTIVE and sign(approachSpeed) == 1 and current_dist > 100)
 
 func note_check_collision(i:int):
-	# 1. Replay logic stays the same
 	if Rhythia.replaying and Rhythia.replay.sv != 1:
 		return Rhythia.replay.should_hit(i)
 	
-	# 2. Convert cursor world position to the $Notes container's local space
-	# This accounts for the container's rotation and translation automatically
 	var cursor_world_pos = $Cursor.global_transform.origin
 	var local_cpos = $Notes.to_local(cursor_world_pos)
 	
-	# 3. Hitbox size math
 	var hbs:float = Rhythia.note_hitbox_size/2
 	if hbs == 0.57: hbs = 0.56875 
 	
-	# 4. Define where the note's center is relative to the $Notes container
-	var target_pos:Vector2 = notes[i][0] # Original position
+	var target_pos:Vector2 = notes[i][0]
 	
-	if Rhythia.mod_earthquake:
-		# Because you subtracted 1 and added 1 in note_reposition, 
-		# we must do the same here so the hitbox matches the visual note center
+	if Rhythia.mod_360:
 		target_pos.x -= 1
 		target_pos.y += 1
 		
-	# 5. Compare the LOCAL cursor position to the LOCAL note position
 	return (local_cpos.x <= target_pos.x + hbs and local_cpos.x >= target_pos.x - hbs) and \
 		   (local_cpos.y <= target_pos.y + hbs and local_cpos.y >= target_pos.y - hbs)
 
@@ -213,11 +205,10 @@ var asq = Rhythia.note_visual_approach
 var last_reposition_ms:float = -10000
 var out_of_notes:bool = false
 func reposition_notes(force:bool=false,rerun_start:int=-1):
-	if Rhythia.mod_earthquake:
+	if Rhythia.mod_360:
 		$Notes.translation = Vector3(1, -1, 0)
 		$Notes.rotation.z = ms * 0.0006
 	else:
-		# Reset rotation if earthquake is off
 		$Notes.rotation.z = 0
 		$Notes.translation = Vector3.ZERO
 		
@@ -294,14 +285,13 @@ func reposition_notes(force:bool=false,rerun_start:int=-1):
 					else:
 						$Miss.transform = notes[i][5]
 						$Miss.play()
-				if Rhythia.show_miss_effect:
+				if false:
 					var pos:Vector3 = Vector3(
 						notes[i][5].origin.x,
 						notes[i][5].origin.y,
 						0.002
 					)
 
-					missEffect.duplicate().spawn(self,pos,notes[i][3],miss_id,true)
 				emit_signal("miss",notes[i][3])
 				prev_ms = notems
 			elif result:
@@ -328,12 +318,11 @@ func reposition_notes(force:bool=false,rerun_start:int=-1):
 					$Cursor.global_transform.origin.y,
 					0.002
 				)
-				if Rhythia.show_hit_effect and !Rhythia.visual_mode:
+				if false and !Rhythia.visual_mode:
 					if !Rhythia.hit_effect_at_cursor:
 						pos.x = (global_transform * notes[i][5]).origin.x
 						pos.y = (global_transform * notes[i][5]).origin.y
 
-					hitEffect.duplicate().spawn(get_parent(),pos,notes[i][3],hit_id,false)
 				emit_signal("hit",notes[i][3])
 				var score:int = get_parent().hit(notes[i][3])
 				if Rhythia.score_popup:
@@ -509,18 +498,9 @@ func _ready():
 	$Notes.multimesh.mesh = mesh
 	
 	# setup for effects (user://hit and user://miss images)
-	if hitEffect.has_method("setup"): hitEffect.setup(hit_id,false)
-	hitEffect.visible = false
-	add_child(hitEffect)
-	
-	if missEffect.has_method("setup"): missEffect.setup(miss_id,true)
-	missEffect.visible = false
-	add_child(missEffect)
 	
 	# force everything to be loaded now
 	yield(get_tree(),"idle_frame")
-	hitEffect.duplicate().spawn(get_parent(),Vector3(0,0,-400),Color(1,1,1),hit_id,false)
-	missEffect.duplicate().spawn(self,Vector3(0,0,-400),Color(1,1,1),miss_id,true)
 	$Notes.multimesh.set_instance_color(0,Color(0,0,0,0))
 	$Notes.multimesh.set_instance_transform(0,Transform())
 	if asq:
@@ -861,7 +841,6 @@ func _process(delta:float):
 				Rhythia.replay.store_cursor_pos(rms,$Cursor.rpos.x,$Cursor.rpos.y)
 		
 		if Rhythia.rainbow_grid:
-			$Inner.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
 			$Outer.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
 
 

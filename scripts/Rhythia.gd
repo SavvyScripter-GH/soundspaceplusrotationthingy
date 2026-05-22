@@ -9,8 +9,6 @@ signal selected_song_changed
 signal selected_space_changed
 signal selected_colorset_changed
 signal selected_mesh_changed
-signal selected_hit_effect_changed
-signal selected_miss_effect_changed
 signal init_stage_reached
 signal init_stage_num
 signal map_list_ready
@@ -48,8 +46,6 @@ var selected_space:BackgroundWorld
 var selected_colorset:ColorSet
 var selected_song:Song
 var selected_mesh:NoteMesh
-var selected_hit_effect:NoteEffect
-var selected_miss_effect:NoteEffect
 # Selectors
 func select_colorset(set:ColorSet):
 	if set:
@@ -62,14 +58,6 @@ func select_world(world:BackgroundWorld):
 func select_mesh(mesh:NoteMesh):
 	selected_mesh = mesh
 	emit_signal("selected_mesh_changed",mesh)
-func select_hit_effect(effect:NoteEffect):
-	if effect:
-		selected_hit_effect = effect
-		emit_signal("selected_hit_effect_changed",effect)
-func select_miss_effect(effect:NoteEffect):
-	if effect:
-		selected_miss_effect = effect
-		emit_signal("selected_miss_effect_changed",effect)
 func select_song(song:Song):
 	if song.is_online:
 		emit_signal("download_start")
@@ -420,12 +408,11 @@ func update_rpc_song(): # Discord RPC
 		if Rhythia.mod_mirror_y: mirrorst += "Y"
 		mods.append(mirrorst)
 	if mod_ghost: mods.append("Ghost")
-	if mod_flashlight: mods.append("Flashlight")
 	if mod_nearsighted: mods.append("Nearsight")
 	if mod_hardrock: mods.append("Hard Rock")
 	if replay.autoplayer: mods.append("Auto")
 	
-	if mods.size() == 0: txt = "No modifiers"
+	if mods.size() == 0: txt = "No modifiers!!"
 	else:
 		for i in range(mods.size()):
 			if i != 0: txt += ", "
@@ -473,7 +460,7 @@ var mod_ghost:bool = false setget set_mod_ghost
 var mod_sudden_death:bool = false setget set_mod_sudden_death
 var mod_chaos:bool = false setget set_mod_chaos
 var mod_earthquake:bool = false setget set_mod_earthquake
-var mod_flashlight:bool = false setget set_mod_flashlight
+var mod_360:bool = false setget set_mod_360
 var mod_hardrock:bool = false setget set_mod_hardrock
 # Modifiers - Custom values
 var start_offset:float = 0 setget _set_start_offset
@@ -528,8 +515,8 @@ func set_mod_chaos(v:bool):
 	mod_chaos = v; emit_signal("mods_changed")
 func set_mod_earthquake(v:bool):
 	mod_earthquake = v; emit_signal("mods_changed")
-func set_mod_flashlight(v:bool):
-	mod_flashlight = v; emit_signal("mods_changed")
+func set_mod_360(v:bool):
+	mod_360 = v; emit_signal("mods_changed")
 func set_mod_hardrock(v:bool):
 	mod_hardrock = v; emit_signal("mods_changed")
 # Mod setters - Custom values
@@ -540,7 +527,7 @@ func _set_hitbox_size(v:float):
 func _set_hitwindow(v:float):
 	hitwindow_ms = v; emit_signal("mods_changed")
 func _set_custom_speed(v:float):
-	print("custom speed changed")
+	#print("custom speed changed")
 	custom_speed = v
 	Globals.speed_multi[Globals.SPEED_CUSTOM] = v
 	emit_signal("mods_changed")
@@ -557,7 +544,26 @@ func _set_health_model(v:int):
 func _set_grade_system(v:int):
 	grade_system = v; emit_signal("mods_changed")
 
+const CACHE_FILE_PATH = "user://map_cache.json"
 
+func load_cache_from_disk() -> Dictionary:
+	var file = File.new()
+	if file.file_exists(CACHE_FILE_PATH):
+		file.open(CACHE_FILE_PATH, File.READ)
+		var json_result = JSON.parse(file.get_as_text())
+		file.close()
+		
+		if json_result.error == OK and typeof(json_result.result) == TYPE_DICTIONARY:
+			return json_result.result
+	
+	return {}
+
+func save_cache_to_disk(cache_dict: Dictionary) -> void:
+	var file = File.new()
+	file.open(CACHE_FILE_PATH, File.WRITE)
+	file.store_string(to_json(cache_dict))
+	file.close()
+	print("Map cache saved to disk.")
 # Settings - Notes
 var approach_rate:float = 40 setget ,get_approach_rate
 func get_approach_rate():
@@ -582,10 +588,10 @@ func get_fade_length():
 	if replaying and replay.settings.has("fade_length"): return replay.settings.get("fade_length")
 	return fade_length
 
-var show_hit_effect:bool = true
-var hit_effect_at_cursor:bool = true
+var show_hit_effect:bool = false
+var hit_effect_at_cursor:bool = false
 
-var show_miss_effect:bool = true
+var show_miss_effect:bool = false
 
 # Settings - Camera/Controls
 var hlm_converted:bool = false
@@ -756,10 +762,6 @@ var hit_pitch:bool = false
 var hit_pitch_min:float = 0.9
 var hit_pitch_max:float = 1.15
 
-var arcw_mode:bool = false # heheheha
-var sex_mode:bool = false
-var memory_lane:bool = false # :(
-
 var language:int = 0
 
 
@@ -839,7 +841,7 @@ func generate_pb_str(for_pb:bool=false):
 	if mod_chaos: pts.append("m_chaos")
 	if invert_mouse: pts.append("m_im")
 	if mod_earthquake: pts.append("m_earthquake")
-	if mod_flashlight: pts.append("m_flashlight")
+	if mod_360: pts.append("m_360")
 	if mod_hardrock: pts.append("m_hardrock")
 	if mod_nofail: pts.append("m_nofail") # for replays
 	
@@ -869,7 +871,6 @@ func parse_pb_str(txt:String):
 	data.mod_chaos = false
 	data.invert_mouse = false
 	data.mod_earthquake = false
-	data.mod_flashlight = false
 	data.mod_hardrock = false
 	data.mod_nofail = false
 	
@@ -904,7 +905,7 @@ func parse_pb_str(txt:String):
 				"m_chaos": data.mod_chaos = true
 				"m_im": data.invert_mouse = true
 				"m_earthquake": data.mod_earthquake = true
-				"m_flashlight": data.mod_flashlight = true
+				"m_360": data.mod_360 = true
 				"m_hardrock": data.mod_hardrock = true
 				"m_nofail": data.mod_nofail = true
 	return data
@@ -1149,10 +1150,6 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 			rainbow_grid = data.rainbow_grid
 		if data.has("rainbow_hud"): 
 			rainbow_hud = data.rainbow_hud
-		if data.has("selected_hit_effect"): 
-			var eff = registry_effect.get_item(data.selected_hit_effect)
-			if eff:
-				select_hit_effect(eff)
 			
 		if data.has("hit_effect_at_cursor"): 
 			hit_effect_at_cursor = data.hit_effect_at_cursor
@@ -1177,12 +1174,6 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 			faraway_hud = data.faraway_hud
 		if data.has("music_offset"): 
 			music_offset = data.music_offset
-		if data.has("selected_miss_effect"): 
-			var eff = registry_effect.get_item(data.selected_miss_effect)
-			if eff:
-				select_miss_effect(eff)
-		if data.has("show_miss_effect"): 
-			show_miss_effect = data.show_miss_effect
 		if data.has("auto_maximize"): 
 			auto_maximize = data.auto_maximize
 			if auto_maximize: OS.window_maximized = true
@@ -1343,7 +1334,7 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 		
 		if sv >= 7: 
 			show_config = bool(file.get_8())
-			enable_grid = bool(file.get_8())
+			enable_grid = false
 		if sv >= 8:
 			cursor_scale = file.get_float()
 		
@@ -1423,7 +1414,7 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 			note_hitbox_size = 1.140
 		
 		if sv >= 27:
-			show_hit_effect = bool(file.get_8())
+			show_hit_effect = false
 		if sv >= 28:
 			
 			if file.get_8() != 6: # Integrity check
@@ -1454,14 +1445,14 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 				alert = "The behavior of the Smart Trail setting has been significantly changed, so it has been turned off. See its description in Settings for the new behavior."
 				save_settings()
 		if sv >= 31:
-			var eff = registry_effect.get_item(file.get_line())
+			var eff = false
 			if eff:
-				select_hit_effect(eff)
+				pass
 			
 			if file.get_8() != 192: # Integrity check
 				print("integ 9"); return 11
 			
-			hit_effect_at_cursor = bool(file.get_8())
+			hit_effect_at_cursor = false
 		if sv >= 33:
 			show_warnings = bool(file.get_8())
 		if sv >= 34:
@@ -1482,9 +1473,9 @@ func load_saved_settings(saveFile:String = Globals.p("user://settings.json")):
 				music_offset = float(file.get_32())
 		if sv >= 39:
 			var eff = registry_effect.get_item(file.get_line())
-			if eff:
-				select_miss_effect(eff)
-			show_miss_effect = bool(file.get_8())
+			if false:
+				pass
+			show_miss_effect = false
 		if sv >= 40:
 			auto_maximize = bool(file.get_8())
 		if sv >= 42:
@@ -1554,7 +1545,6 @@ func save_settings(saveFile:String = Globals.p("user://settings.json")):
 			selected_colorset = selected_colorset.id,
 			selected_space = selected_space.id,
 			selected_mesh = selected_mesh.id,
-			selected_hit_effect = selected_hit_effect.id,
 			parallax = parallax,
 			fov = fov,
 			hit_fov = hit_fov,
@@ -1566,7 +1556,7 @@ func save_settings(saveFile:String = Globals.p("user://settings.json")):
 			trail_mode_opacity = trail_mode_opacity,
 			cam_unlock = cam_unlock,
 			show_config = show_config,
-			enable_grid = enable_grid,
+			enable_grid = false,
 			cursor_scale = cursor_scale,
 			enable_drift_cursor = enable_drift_cursor,
 			follow_drift_cursor = follow_drift_cursor,
@@ -1589,7 +1579,7 @@ func save_settings(saveFile:String = Globals.p("user://settings.json")):
 			ui_parallax = ui_parallax,
 			grid_parallax = grid_parallax,
 			fade_length = fade_length,
-			show_hit_effect = show_hit_effect,
+			show_hit_effect = false,
 			lock_mouse = lock_mouse,
 			absolute_mode = absolute_mode,
 			absolute_scale = absolute_scale,
@@ -1606,7 +1596,7 @@ func save_settings(saveFile:String = Globals.p("user://settings.json")):
 			rainbow_grid = rainbow_grid,
 			rainbow_hud = rainbow_hud,
 			smart_trail = smart_trail,
-			hit_effect_at_cursor = hit_effect_at_cursor,
+			hit_effect_at_cursor = false,
 			show_warnings = show_warnings,
 			record_replays = record_replays,
 			alt_cam = alt_cam,
@@ -1617,8 +1607,6 @@ func save_settings(saveFile:String = Globals.p("user://settings.json")):
 			simple_hud = simple_hud,
 			faraway_hud = faraway_hud,
 			music_offset = music_offset,
-			selected_miss_effect = selected_miss_effect.id,
-			show_miss_effect = show_miss_effect,
 			auto_maximize = auto_maximize,
 			note_visual_approach = note_visual_approach,
 			visual_approach_follow = visual_approach_follow,
@@ -1712,6 +1700,10 @@ func register_colorsets():
 		"ssp_cottoncandy", "Cotton Candy", ""
 	))
 	registry_colorset.add_item(ColorSet.new(
+		[ Color("#ffb3e1"), Color("#ffffff") ],
+		"ssp_brecken", "Brecken's Choice", "Brecken"
+	))
+	registry_colorset.add_item(ColorSet.new(
 		[ Color("#ffcc4d"),Color("#ff7892"),Color("#e5dd80") ],
 		"ssp_veggiestraws", "Veggie Straws", "Chedski"
 	))
@@ -1767,10 +1759,6 @@ func register_colorsets():
 		[ Color("#008cff"), Color("#ed3434"), Color("#10bd0d"), Color("#ffb300") ],
 		"ssp_wii", "Wii Players", "balt"
 	))
-	registry_colorset.add_item(ColorSet.new(
-		[ Color("#ffb3e1"), Color("#ffffff") ],
-		"ssp_brecken", "Brecken's Choice", "Brecken"
-	))
 	
 func register_worlds():
 	# idI:String,nameI:String,pathI:String,creatorI:String="Unknown"
@@ -1778,16 +1766,6 @@ func register_worlds():
 		"ssp_space_tunnel", "Neon Corners",
 		"res://assets/worlds/neon_tunnel/space_tunnel.tscn", "Chedski",
 		"res://assets/worlds/neon_tunnel/space_tunnel.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_neon_tunnel", "Neon Rings",
-		"res://assets/worlds/neon_tunnel/neon_tunnel.tscn", "Chedski",
-		"res://assets/worlds/neon_tunnel/neon_tunnel.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_deep_space", "Deep Space",
-		"res://assets/worlds/deep_space/deep_space.tscn", "Chedski",
-		"res://assets/worlds/deep_space/deep_space.png"
 	))
 	registry_world.add_item(BackgroundWorld.new(
 		"ssp_void", "VOID",
@@ -1798,11 +1776,6 @@ func register_worlds():
 		"ssp_rainbow_road", "Rainbow Road",
 		"res://assets/worlds/space/rainbow_road.tscn", "Chedski",
 		"res://assets/worlds/space/rainbow_road.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_cubic", "Cubic",
-		"res://assets/worlds/cubic/cubic.tscn", "Chedski",
-		"res://assets/worlds/cubic/cubic.png"
 	))
 	registry_world.add_item(BackgroundWorld.new(
 		"ssp_classic", "Beyond",
@@ -1817,21 +1790,6 @@ func register_worlds():
 	registry_world.add_item(BackgroundWorld.new(
 		"ssp_reality_dismissed_dark", "Reality Dismissed (Dark)",
 		"res://assets/worlds/reality_dismissed/reality_dismissed_dark.tscn", "pyrule",
-		"res://assets/worlds/custom/custom.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_baseplate", "Baseplate (Day)",
-		"res://assets/worlds/baseplate/baseplate.tscn", "pyrule",
-		"res://assets/worlds/baseplate/baseplate.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_baseplate_night", "Baseplate (Night)",
-		"res://assets/worlds/baseplate/baseplate_night.tscn", "pyrule",
-		"res://assets/worlds/baseplate/baseplate.png"
-	))
-	registry_world.add_item(BackgroundWorld.new(
-		"ssp_event_horizon", "Event Horizon",
-		"res://assets/worlds/event_horizon/event_horizon.tscn", "Chedski",
 		"res://assets/worlds/custom/custom.png"
 	))
 	registry_world.add_item(BackgroundWorld.new(
@@ -1911,15 +1869,6 @@ func register_meshes():
 				))
 			mesh_name = dir.get_next()
 func register_effects():
-	registry_effect.add_item(NoteEffect.new(
-		"ssp_ripple", "Ripple* (no color)", "res://assets/notefx/ripple/ripple.tscn", "Chedski"
-	))
-	registry_effect.add_item(NoteEffect.new(
-		"ssp_ripple_n", "Ripple* (note color)", "res://assets/notefx/ripple/ripple.tscn", "Chedski"
-	))
-	registry_effect.add_item(NoteEffect.new(
-		"ssp_ripple_r", "Ripple* (rainbow)", "res://assets/notefx/ripple/ripple.tscn", "Chedski"
-	))
 	
 	registry_effect.add_item(NoteEffect.new(
 		"ssp_shards", "Shards (note color)", "res://assets/notefx/shards/shards.tscn", "Chedski"
@@ -2078,7 +2027,7 @@ func do_init(_ud=null):
 			single_map_mode_audio_path = Globals.cmdline.audio
 			
 	# Check for updates
-	if (OS.has_feature("Windows") or OS.has_feature("X11")) and !OS.has_feature("editor"):
+	if OS.has_feature("Windows"): #and !OS.has_feature("editor"):
 		emit_signal("init_stage_reached","Check for updates")
 		emit_signal("init_stage_num",-1)
 		yield(get_tree(),"idle_frame")
@@ -2086,26 +2035,20 @@ func do_init(_ud=null):
 		var latest_version = yield(Online,"latest_version")
 		if ProjectSettings.get_setting("application/config/version") != latest_version:
 			var sel = 1
-			Globals.confirm_prompt.s_alert.play()
-			Globals.confirm_prompt.open("A new version of the game was detected.\n Would you like to automatically update?","Outdated",[{text="Ignore",wait=2},{text="Update",wait=1}])
-			sel = yield(Globals.confirm_prompt,"option_selected")
-			Globals.confirm_prompt.s_next.play()
-			Globals.confirm_prompt.close()
-			yield(Globals.confirm_prompt,"done_closing")
+			if !Online.latest_version_data.body.begins_with("-a"):
+				Globals.confirm_prompt.s_alert.play()
+				Globals.confirm_prompt.open("You are on an outdated version of the game! Would you like to automatically update?","Outdated",[{text="Ignore",wait=4},{text="Update",wait=2}])
+				sel = yield(Globals.confirm_prompt,"option_selected")
+				Globals.confirm_prompt.s_next.play()
+				Globals.confirm_prompt.close()
+				yield(Globals.confirm_prompt,"done_closing")
 			if bool(sel):
 				emit_signal("init_stage_reached","Updating the game")
 				Online.attempt_update()
 				yield(Online,"update_finished")
 				get_tree().call_deferred("quit",1)
-				OS.execute(OS.get_executable_path(),["--updated"],false)
+				OS.execute(OS.get_executable_path(),[],false)
 				return
-		elif Globals.cmdline.keys().has("updated"):
-			var rdir = Directory.new()
-			rdir.open(OS.get_executable_path().get_base_dir())
-			if rdir.file_exists("SoundSpacePlus.pck.old"):
-				rdir.remove("SoundSpacePlus.pck.old")
-			if rdir.file_exists("update.zip"):
-				rdir.remove("update.zip")
 	
 	emit_signal("init_stage_reached","Init filesystem")
 	emit_signal("init_stage_num",-1)
@@ -2149,9 +2092,7 @@ func do_init(_ud=null):
 		err = file.open(Globals.p("user://install_path.txt"),File.WRITE)
 		if err == OK:
 			file.store_string(OS.get_executable_path())
-	
-	
-	
+
 	# set up registries
 	emit_signal("init_stage_reached","Init registries")
 	if lp: yield(get_tree(),"idle_frame")
@@ -2283,24 +2224,28 @@ func do_init(_ud=null):
 		var load_start = OS.get_ticks_usec()
 		var from_file = 0
 		var from_cache = 0
+		var last_percent = -1
+
 		for i in range(smaps.size()):
-			emit_signal("init_stage_reached","Register content 1/5\nImport Rhythia maps\n%.0f%%" % (
-				100*(float(i)/float(smaps.size()))
-			))
-			if (OS.get_ticks_msec() - lt) >= load_target_frame_time * 1000:
-				lt = OS.get_ticks_msec()
-				yield(get_tree(),"idle_frame")
-			#if fmod(i,max(min(floor(float(smaps.size())/200),40),5)) == 0: yield(get_tree(),"idle_frame")
+			var current_percent = int(100.0 * float(i) / float(smaps.size()))
+			
+			if current_percent != last_percent:
+				emit_signal("init_stage_reached", "Register content 1/5\nImport Rhythia maps\n%d%%" % current_percent)
+				last_percent = current_percent
+				
+				yield(get_tree(), "idle_frame")
+
 			if caches.has(smaps[i]):
 				if registry_song.add_sspm_cached_map(smaps[i], caches.get(smaps[i])):
 					from_cache += 1
 				else:
-					print("Failed loading a map from cache")
+					print("Failed loading a map from cache: ", smaps[i])
 					from_file += 1
 					registry_song.add_sspm_map(smaps[i])
 			else:
 				from_file += 1
 				registry_song.add_sspm_map(smaps[i])
+
 		var load_end = OS.get_ticks_usec()
 		var load_time = load_end - load_start
 		print("Loaded %s/%s maps from cache of %s" % [from_cache, from_cache + from_file, caches.size()])
@@ -2362,14 +2307,10 @@ func do_init(_ud=null):
 	
 	emit_signal("init_stage_reached","Init default assets 1/6")
 	if lp: yield(get_tree(),"idle_frame")
-	selected_hit_effect = registry_effect.get_item("ssp_ripple")
-	selected_miss_effect = registry_effect.get_item("ssp_miss")
 	selected_colorset = registry_colorset.get_item("ssp_cottoncandy")
 	selected_space = registry_world.get_item("ssp_space_tunnel")
 	selected_mesh = registry_mesh.get_item("ssp_rounded")
 	
-	assert(selected_hit_effect)
-	assert(selected_miss_effect)
 	assert(selected_colorset)
 	assert(selected_space)
 	assert(selected_mesh)
@@ -2404,7 +2345,7 @@ func do_init(_ud=null):
 		# errors are returned when settings are invalid
 		get_tree().change_scene("res://scenes/errors/settings.tscn")
 		return
-	print('settings done')
+	#print('settings done')
 	if !hlm_converted:
 		parallax *= (0.35/0.25)
 		ui_parallax *= (0.35/0.25)
@@ -2490,15 +2431,6 @@ func do_init(_ud=null):
 	first_init_done = true
 	do_archive_convert = false
 	
-	if Input.is_key_pressed(KEY_A) and Input.is_key_pressed(KEY_R) and Input.is_key_pressed(KEY_C) and Input.is_key_pressed(KEY_W):
-		arcw_mode = true
-		alert = "ARCW mode enabled successfully."
-	if Input.is_key_pressed(KEY_S) and Input.is_key_pressed(KEY_E) and Input.is_key_pressed(KEY_X):
-		sex_mode = true
-		alert = "Sex mode enabled successfully."
-	if Input.is_key_pressed(KEY_D) and Input.is_key_pressed(KEY_Y) and Input.is_key_pressed(KEY_A):
-		memory_lane = true
-		alert = "Memory Lane enabled successfully."
 
 	var alert_snd_played:bool = false
 	if alert != "":
@@ -2514,12 +2446,9 @@ func do_init(_ud=null):
 		emit_signal("init_stage_reached","Setup")
 		if !alert_snd_played: Globals.confirm_prompt.s_alert.play()
 		alert_snd_played = true
-		Globals.confirm_prompt.open("Would you like to record replays? This can be changed in settings later.","Replays",[{text="No"},{text="Yes"}])
-		var sel = yield(Globals.confirm_prompt,"option_selected")
-		record_replays = bool(sel)
-		Globals.confirm_prompt.open("Do you favor high quality or low file size replays? This can be changed in settings later.","Replays",[{text="File Size"},{text="Quality"}])
-		sel = yield(Globals.confirm_prompt,"option_selected")
-		record_limit = sel
+		record_replays = true
+		record_limit = 0
+
 		save_settings()
 		Globals.confirm_prompt.s_next.play()
 		Globals.confirm_prompt.close()

@@ -4,8 +4,8 @@ func idle_status():
 	# after 5 min on the menu switch to "listening to music"
 	var activity = Discord.Activity.new()
 	activity.set_type(Discord.ActivityType.Playing)
-	activity.set_details("Main Menu")
-	activity.set_state("Listening to music")
+	activity.set_details("Listening to ohohooh saavvyyyy")
+	activity.set_state("Idle - Listening to music")
 
 	var assets = activity.get_assets()
 	assets.set_large_image("icon-bg")
@@ -14,12 +14,6 @@ func idle_status():
 
 func _ready():
 	get_tree().paused = false
-	if Rhythia.arcw_mode:
-		get_tree().change_scene("res://w.tscn")
-	if Rhythia.sex_mode:
-		get_tree().change_scene("res://sex.tscn")
-	if Rhythia.memory_lane:
-		get_tree().change_scene("res://dya.tscn")
 	
 	# fix audio pitchshifts
 	if AudioServer.get_bus_effect_count(AudioServer.get_bus_index("Music")) > 0:
@@ -32,7 +26,7 @@ func _ready():
 	if ProjectSettings.get_setting("application/config/discord_rpc"):
 		var activity = Discord.Activity.new()
 		activity.set_type(Discord.ActivityType.Playing)
-		activity.set_details("Main Menu")	
+		activity.set_details("Listening to ohohooh saavvyyyy")	
 		activity.set_state("Selecting a song")
 
 		var assets = activity.get_assets()

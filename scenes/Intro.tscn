@@ -678,13 +678,15 @@ pixel_size = 0.0025
 texture = ExtResource( 25 )
 
 [node name="Sprite3D2" type="Sprite3D" parent="."]
-transform = Transform( 1.06125, -1.06007, -2.4413e-11, -4.63629e-08, -4.63629e-08, -1, 1.06007, 1.06125, -4.37114e-08, 0, 5.5, 0 )
+transform = Transform( 1.06125, -1.06007, 3.08914e-08, 0, -6.55671e-08, -1, 1.06007, 1.06125, -3.09258e-08, 0, 5.5, 0 )
 modulate = Color( 1, 1, 1, 0.196078 )
+opacity = 0.27
 pixel_size = 0.0025
 texture = ExtResource( 25 )
 
 [node name="Sprite3D3" type="Sprite3D" parent="."]
-transform = Transform( 2, 0.00112053, -2.44899e-11, 0, -8.74228e-08, -1, -0.00112053, 2, -4.37114e-08, 0, 6, 0 )
+transform = Transform( 1.06125, -1.06007, 3.08914e-08, 0, -6.55671e-08, -1, 1.06007, 1.06125, -3.09258e-08, 0, 6.09594, 0 )
+modulate = Color( 1, 1, 1, 0.196078 )
 pixel_size = 0.0025
 texture = ExtResource( 25 )
 

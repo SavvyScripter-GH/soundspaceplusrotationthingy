@@ -59,8 +59,6 @@ func check_experimental_settings():
 	return false
 
 func check_warnings():
-	if Input.is_action_pressed("arcw3") and bar_enable:
-		bar_enable = false
 
 	if Input.is_action_pressed("warning_test"):
 		return "test"

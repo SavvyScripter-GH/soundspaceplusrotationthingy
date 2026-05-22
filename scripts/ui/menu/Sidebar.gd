@@ -43,7 +43,6 @@ onready var smm_visibility:Dictionary = {
 	$L/ContentMgr: true,
 	$L/Language: false,
 	$L/StartVR: false,
-	$L/OldMenu: false,
 	$L/Quit: true,
 }
 
@@ -96,7 +95,6 @@ func _ready():
 	$Click.connect("mouse_entered",self,"_on_Sidebar", [true])
 	$L.connect("mouse_entered",self,"_on_Sidebar", [true])
 	connect("mouse_exited",self,"_on_Sidebar", [false])
-	$L/OldMenu.connect("pressed",self,"to_old_menu")
 	$L/StartVR.connect("pressed",self,"to_vr")
 	$L/Quit.connect("pressed",self,"quit")
 	

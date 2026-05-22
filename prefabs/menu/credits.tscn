@@ -182,10 +182,62 @@ custom_fonts/font = SubResource( 158 )
 text = "-- contributors --"
 align = 1
 
-[node name="C3" type="VBoxContainer" parent="."]
+[node name="C4" type="VBoxContainer" parent="."]
 margin_top = 590.0
 margin_right = 1216.0
-margin_bottom = 681.0
+margin_bottom = 653.0
+grow_horizontal = 2
+custom_constants/separation = 8
+alignment = 1
+
+[node name="Title" type="Label" parent="C4"]
+margin_right = 1216.0
+margin_bottom = 30.0
+custom_colors/font_color = Color( 1, 0.972549, 0.309804, 1 )
+custom_fonts/font = SubResource( 109 )
+text = "SavvyScripter"
+align = 1
+
+[node name="Label" type="Label" parent="C4"]
+margin_top = 38.0
+margin_right = 1216.0
+margin_bottom = 63.0
+custom_colors/font_color = Color( 0.972549, 0.721569, 1, 1 )
+custom_fonts/font = SubResource( 110 )
+text = "github.com/SavvyScripter"
+align = 1
+autowrap = true
+
+[node name="C5" type="VBoxContainer" parent="."]
+margin_top = 665.0
+margin_right = 1216.0
+margin_bottom = 728.0
+grow_horizontal = 2
+custom_constants/separation = 8
+alignment = 1
+
+[node name="Title" type="Label" parent="C5"]
+margin_right = 1216.0
+margin_bottom = 30.0
+custom_colors/font_color = Color( 1, 0.972549, 0.309804, 1 )
+custom_fonts/font = SubResource( 109 )
+text = "Brrecken/MrBrecken"
+align = 1
+
+[node name="Label" type="Label" parent="C5"]
+margin_top = 38.0
+margin_right = 1216.0
+margin_bottom = 63.0
+custom_colors/font_color = Color( 0.972549, 0.721569, 1, 1 )
+custom_fonts/font = SubResource( 110 )
+text = "github.com/MrBrecken"
+align = 1
+autowrap = true
+
+[node name="C3" type="VBoxContainer" parent="."]
+margin_top = 740.0
+margin_right = 1216.0
+margin_bottom = 831.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -210,9 +262,9 @@ align = 1
 autowrap = true
 
 [node name="C1" type="VBoxContainer" parent="."]
-margin_top = 693.0
+margin_top = 843.0
 margin_right = 1216.0
-margin_bottom = 756.0
+margin_bottom = 906.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -236,9 +288,9 @@ align = 1
 autowrap = true
 
 [node name="C2" type="VBoxContainer" parent="."]
-margin_top = 768.0
+margin_top = 918.0
 margin_right = 1216.0
-margin_bottom = 831.0
+margin_bottom = 981.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -262,18 +314,18 @@ align = 1
 autowrap = true
 
 [node name="PatronTitle" type="Label" parent="."]
-margin_top = 843.0
+margin_top = 993.0
 margin_right = 1216.0
-margin_bottom = 887.0
+margin_bottom = 1037.0
 custom_colors/font_color = Color( 1, 0.258824, 0.301961, 1 )
 custom_fonts/font = SubResource( 158 )
 text = "-- patreon supporters --"
 align = 1
 
 [node name="T3" type="VBoxContainer" parent="."]
-margin_top = 899.0
+margin_top = 1049.0
 margin_right = 1216.0
-margin_bottom = 929.0
+margin_bottom = 1079.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -283,7 +335,7 @@ margin_right = 1216.0
 margin_bottom = 30.0
 custom_colors/font_color = Color( 0.835294, 0.309804, 1, 1 )
 custom_fonts/font = SubResource( 109 )
-text = "- big money! -"
+text = "- Dylan Jarvis -"
 align = 1
 
 [node name="Label" type="Label" parent="T3"]
@@ -298,9 +350,9 @@ align = 1
 autowrap = true
 
 [node name="T2" type="VBoxContainer" parent="."]
-margin_top = 941.0
+margin_top = 1091.0
 margin_right = 1216.0
-margin_bottom = 968.0
+margin_bottom = 1118.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -324,9 +376,9 @@ text = "patron name 2"
 align = 1
 
 [node name="T1" type="VBoxContainer" parent="."]
-margin_top = 980.0
+margin_top = 1130.0
 margin_right = 1216.0
-margin_bottom = 1007.0
+margin_bottom = 1157.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -352,9 +404,9 @@ align = 1
 autowrap = true
 
 [node name="SpecialThanks" type="VBoxContainer" parent="."]
-margin_top = 1019.0
+margin_top = 1169.0
 margin_right = 1216.0
-margin_bottom = 1384.0
+margin_bottom = 1534.0
 grow_horizontal = 2
 custom_constants/separation = 8
 alignment = 1
@@ -578,7 +630,7 @@ text = "The playtester team - Catching major bugs before they reach the public"
 align = 1
 
 [node name="SPACER" type="Control" parent="."]
-margin_top = 1396.0
+margin_top = 1546.0
 margin_right = 1216.0
-margin_bottom = 1521.0
+margin_bottom = 1671.0
 rect_min_size = Vector2( 0, 125 )

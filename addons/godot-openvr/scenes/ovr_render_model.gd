@@ -46,7 +46,7 @@ func _process(delta):
 	
 	# became active? lets handle it...
 	var controller_name = controller.get_controller_name()
-	print("Controller " + controller_name + " became active")
+	#print("Controller " + controller_name + " became active")
 	
 	# attempt to load a mesh for this
 	mesh = _load_controller_mesh(controller_name)

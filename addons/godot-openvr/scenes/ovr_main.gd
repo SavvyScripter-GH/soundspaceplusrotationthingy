@@ -28,7 +28,7 @@ func _ready():
 	# Load our config before we initialise
 	openvr_config = preload("res://addons/godot-openvr/OpenVRConfig.gdns");
 	if openvr_config:
-		print("Setup configuration")
+		#print("Setup configuration")
 		openvr_config = openvr_config.new()
 		
 		openvr_config.default_action_set = default_action_set
