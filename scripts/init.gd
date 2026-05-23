@@ -48,6 +48,12 @@ func _ready():
 	elif Rhythia.first_init_done:
 		thread.start(Rhythia,"do_init")
 	
+	if not Rhythia.is_init:
+		stage("",true)
+		return
+	elif Rhythia.first_init_done:
+		thread.start(Rhythia,"do_init")
+	
 	Rhythia.is_init = false
 	
 	if ProjectSettings.get_setting("application/config/discord_rpc"):
@@ -91,4 +97,3 @@ func _process(delta):
 	
 	if leaving and result and black_fade == 1:
 		get_tree().change_scene_to(result)
-	

@@ -43,6 +43,7 @@ onready var smm_visibility:Dictionary = {
 	$L/ContentMgr: true,
 	$L/Language: false,
 	$L/StartVR: false,
+	$L/OldMenu: false,
 	$L/Quit: true,
 }
 
@@ -79,7 +80,19 @@ func to_vr():
 	get_node("../Press").play()
 	get_viewport().get_node("Menu").black_fade_target = true
 	yield(get_tree().create_timer(0.35),"timeout")
+	print("will now try to play in vr")
 	Rhythia.start_vr()
+	var activity = Discord.Activity.new()
+	activity.set_type(Discord.ActivityType.Playing)
+	activity.set_details("Loaded VR (test)")
+	activity.set_state("being sigma real")
+	var assets = activity.get_assets()
+	assets.set_large_image("icon-bg")
+	Discord.activity_manager.update_activity(activity)
+	get_viewport().get_node("Menu").black_fade_target = false
+	print("done somehow????")
+
+
 
 func quit():
 	get_node("../Press").play()
@@ -92,14 +105,18 @@ func _ready():
 		buttons[i].connect("pressed",self,"press",[i])
 	
 	press(0,true)
+	if Rhythia.vr:
+		$Click.connect("vr_click",self,"_on_Sidebar", [true])
+		$L.connect("vr_click",self,"_on_Sidebar", [true])
 	$Click.connect("mouse_entered",self,"_on_Sidebar", [true])
 	$L.connect("mouse_entered",self,"_on_Sidebar", [true])
 	connect("mouse_exited",self,"_on_Sidebar", [false])
+	$L/OldMenu.connect("pressed",self,"to_old_menu")
 	$L/StartVR.connect("pressed",self,"to_vr")
 	$L/Quit.connect("pressed",self,"quit")
 	
 	$L/ContentMgr.visible = not Rhythia.vr
-#	$L/StartVR.visible = Rhythia.vr_available and not Rhythia.vr
+	$L/StartVR.visible = Rhythia.vr_available and not Rhythia.vr
 	if Rhythia.vr or !OS.has_feature("pc"):
 		$L/Quit/Label.text = "Quit to Home"
 	

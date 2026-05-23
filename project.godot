@@ -254,12 +254,12 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Rhythia rotation thingy"
+config/name="Savia"
 config/description="testdesc
 "
 run/main_scene="res://scenes/init.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="SoundSpacePlus"
+config/custom_user_dir_name="Savia"
 run/delta_sync_after_draw=true
 boot_splash/image="res://assets/images/branding/splash.png"
 boot_splash/fullsize=false
@@ -300,8 +300,8 @@ config/disable_native_file_dialogs.OSX=true
 config/is_using_controller=true
 config/discord_rpc=true
 config/discord_rpc.editor=true
-networking/github_repo="Rhythia/sound-space-plus"
-config/version="may22-2026-e"
+networking/github_repo="SavvyScripter-GH/savia"
+config/version="may22-2026-f"
 
 [audio]
 
@@ -312,7 +312,7 @@ channel_disable_time=15.0
 
 Globals="*res://scripts/Globals.gd"
 Online="*res://scripts/Online.gd"
-Rhythia="*res://scripts/Rhythia.gd"
+Rhythia="*res://scripts/Savia.gd"
 RQueue="*res://scripts/content/resources/ResourceQueue.gd"
 Discord="*res://addons/discord_game_sdk/discord.gd"
 Dance="*res://scripts/cursordance/Dance.gd"
