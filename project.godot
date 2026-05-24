@@ -301,7 +301,8 @@ config/is_using_controller=true
 config/discord_rpc=true
 config/discord_rpc.editor=true
 networking/github_repo="SavvyScripter-GH/savia_db"
-config/version="may23-2026-b"
+config/version="may23-2026-h"
+config/github_repo="SavvyScripter-GH/savia_db"
 
 [audio]
 

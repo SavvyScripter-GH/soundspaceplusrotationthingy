@@ -51,6 +51,7 @@ func _mapdl_handler(id:String,map:Song):
 		mapdl_error(id,"Networking is disabled",map); return
 	if mapdb_apis.empty():
 		mapdl_error(id,"MapDB APIs Invalid",map); return
+	print(id)
 	
 	call_deferred("test_connection")
 	if !yield(self,"_connection_test"):
@@ -88,12 +89,12 @@ func _mapdl_handler(id:String,map:Song):
 			
 		if mapdl_res.result == HTTPRequest.RESULT_SUCCESS:
 			if mapdl_res.response_code == 200:
-				var final_path = Globals.p("user://maps/%s.sspm" % map.id)
-				var temp_path = Globals.p("user://mapdl.sspm.part")
-		
+				var old_db_id = map.id
+				dir.rename(Globals.p("user://mapdl.sspm.part"), Globals.p("user://maps/%s.sspm" % old_db_id))
 				
-				map.load_from_sspm(final_path)
-				
+				map.load_from_sspm(Globals.p("user://maps/%s.sspm" % old_db_id))
+				map.id = old_db_id
+				map.is_online = false
 				if map.songType != Globals.MAP_SSPM2:
 					if Input.is_action_pressed("skip_convert"):
 						Globals.notify(
@@ -103,9 +104,7 @@ func _mapdl_handler(id:String,map:Song):
 						)
 					else:
 						map.convert_to_sspm(true)
-				dir.rename(temp_path, final_path)
-				map.load_from_sspm(final_path)
-				
+				map_registry.emit_signal("item_updated", map) 
 				emit_signal("map_downloaded", {id=id, success=true})
 			else:
 				var resp = parse_json(mapdl_res.body.get_string_from_utf8())

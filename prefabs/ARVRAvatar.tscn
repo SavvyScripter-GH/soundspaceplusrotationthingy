@@ -2,7 +2,6 @@
 
 [ext_resource path="res://assets/meshes/LowCube.obj" type="ArrayMesh" id=1]
 
-
 [sub_resource type="Shader" id=83]
 code = "shader_type spatial;
 render_mode blend_mix,cull_back,diffuse_burley,specular_disabled,unshaded;

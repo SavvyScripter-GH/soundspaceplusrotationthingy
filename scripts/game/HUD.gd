@@ -498,17 +498,28 @@ func _ready():
 	if Rhythia.mod_nearsighted: mods.append("Nearsight")
 	if Rhythia.mod_chaos: mods.append(tr("Chaos"))
 	if Rhythia.mod_earthquake: mods.append(tr("Earthquake"))
-	if Rhythia.mod_360: mods.append(tr("360x%s" %Rhythia.mod_360_speed))
+	if Rhythia.mod_360:
+		var speed = Rhythia.mod_360_speed
+		var prefix = "-360" if speed < 0 else "360"
+		var abs_speed = abs(speed)
+
+		if abs_speed == 1:
+			mods.append(prefix)
+		else:
+			mods.append("%sx%s" % [prefix, abs_speed])
+	if Rhythia.mod_strobe: mods.append(tr("Strobe"))
 	if Rhythia.mod_hardrock: mods.append(tr("Hard Rock"))
 	if Rhythia.invert_mouse: mods.append(tr("Mouse Inverted"))
+	if Rhythia.hitwindow_ms == 58 and Rhythia.note_hitbox_size == 1.140:
+		ms += tr(" Vulnus Judgement ")
+	elif Rhythia.hitwindow_ms == 300:
+		ms += tr(" Brrecken Judgement ")
+	elif Rhythia.hitwindow_ms != 55 or Rhythia.note_hitbox_size != 1.140:
+		ms += "HW: %.0f ms | HB: %.02f m" % [Rhythia.hitwindow_ms,Rhythia.note_hitbox_size]
 	for i in range(mods.size()):
 		if i != 0: ms += " "
 		ms += mods[i]
 	if mods.size() != 0 and !Rhythia.mod_nofail: ms += '\n'
 	
-	#if Rhythia.hitwindow_ms == 58 and Rhythia.note_hitbox_size == 1.140:
-	#	ms += tr("Vulnus Judgement")
-	if Rhythia.hitwindow_ms != 55 or Rhythia.note_hitbox_size != 1.140:
-		ms += "HW: %.0f ms | HB: %.02f m" % [Rhythia.hitwindow_ms,Rhythia.note_hitbox_size]
 	
 	modtxt.text = ms

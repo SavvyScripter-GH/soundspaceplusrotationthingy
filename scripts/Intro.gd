@@ -15,7 +15,7 @@ func _ready():
 	$Avatar/ArmR/Mesh.translation = Vector3(0,0,0)
 	
 	# lacunella
-	if Rhythia.is_lacunella_enabled() and !((date.month == 6 and date.day == 07) or (date.month == 6 and date.day == 19)):
+	if Rhythia.is_lacunella_enabled() and !((date.month == 5 and date.day == 23) or (date.month == 6 and date.day == 19)):
 		$Avatar/Head/CubellaHair.visible = true
 
 	# for max

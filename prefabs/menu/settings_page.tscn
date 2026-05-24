@@ -308,11 +308,12 @@ script = ExtResource( 9 )
 [node name="TabContainer" type="TabContainer" parent="."]
 margin_top = 59.0
 margin_right = 1280.0
-margin_bottom = 1045.0
+margin_bottom = 548.0
 theme = ExtResource( 1 )
 tab_align = 0
 
 [node name="Gameplay" type="VBoxContainer" parent="TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 30.0
@@ -5120,7 +5121,6 @@ custom_constants/separation = 30
 custom_styles/separator = SubResource( 55 )
 
 [node name="Replays & Misc" type="VBoxContainer" parent="TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 30.0
@@ -5424,7 +5424,7 @@ target = "show_stats"
 [node name="Avatar" type="Control" parent="TabContainer/Replays & Misc/Experimental/Group/H"]
 visible = false
 margin_top = 173.0
-margin_right = 827.0
+margin_right = 955.0
 margin_bottom = 205.0
 rect_min_size = Vector2( 200, 32 )
 
@@ -5540,9 +5540,9 @@ target = "disable_intro"
 
 [node name="RenderScale" type="Control" parent="TabContainer/Replays & Misc/Experimental/Group/H"]
 visible = false
-margin_top = 273.0
-margin_right = 827.0
-margin_bottom = 305.0
+margin_top = 277.0
+margin_right = 955.0
+margin_bottom = 309.0
 rect_min_size = Vector2( 200, 32 )
 
 [node name="Scale" type="SpinBox" parent="TabContainer/Replays & Misc/Experimental/Group/H/RenderScale"]
@@ -5592,9 +5592,9 @@ custom_constants/separation = 30
 custom_styles/separator = SubResource( 55 )
 
 [node name="Control" type="Control" parent="."]
-margin_top = 1049.0
+margin_top = 552.0
 margin_right = 1280.0
-margin_bottom = 1049.0
+margin_bottom = 552.0
 
 [connection signal="pressed" from="TabContainer/Replays & Misc/Experimental/Group/H/Intro/Play" to="TabContainer/Replays & Misc/Experimental/Group/H/Intro/Play" method="_on_Play_pressed"]
 [connection signal="value_changed" from="TabContainer/Replays & Misc/Experimental/Group/H/RenderScale/Scale" to="TabContainer/Replays & Misc/Experimental/Group/H/RenderScale/Scale" method="_on_Scale_value_changed"]

@@ -59,6 +59,7 @@ func update(_s=null):
 	if Rhythia.note_hitbox_size == 1.140: txt += tr("Default hitboxes, ")
 	else: txt += tr("Hitboxes: %s, ") % Rhythia.note_hitbox_size
 	if Rhythia.hitwindow_ms == 55: txt += tr("default hitwindow")
+	elif Rhythia.hitwindow_ms == 300: txt += "Brrecken Judgement"
 	else: txt += tr("hitwindow: %s ms") % Rhythia.hitwindow_ms
 	$RS/HMid/Hitboxes.text = txt
 

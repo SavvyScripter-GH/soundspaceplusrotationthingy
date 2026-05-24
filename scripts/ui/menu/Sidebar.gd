@@ -92,8 +92,6 @@ func to_vr():
 	get_viewport().get_node("Menu").black_fade_target = false
 	print("done somehow????")
 
-
-
 func quit():
 	get_node("../Press").play()
 	get_viewport().get_node("Menu").black_fade_target = true

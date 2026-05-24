@@ -14,7 +14,7 @@ dest_files=[ "res://.import/command_line_error.png-d8d929a180ad585ef508d77a74a5f
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

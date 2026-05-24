@@ -116,6 +116,12 @@ func note_reposition(i:int):
 			var rcoord = Vector2(earthquake_rng.randf_range(-0.25,0.25),earthquake_rng.randf_range(-0.25,0.25))
 			nt.origin.x = real_position.x + (rcoord.x * (current_dist * 0.1))
 			nt.origin.y = real_position.y + (rcoord.y * (current_dist * 0.1))
+		
+		if Rhythia.mod_strobe:
+			if int(ms) % 400 > 200:
+				$Notes.visible = false
+			else:
+				$Notes.visible = true
 			
 #		if Rhythia.note_visual_approach:
 #			$Approach.opacity = 1 - (current_dist / Rhythia.get("spawn_distance"))
@@ -135,7 +141,6 @@ func note_reposition(i:int):
 		var fade_out:float = 1
 		
 		if fade_in_enabled or fade_out_enabled:
-			
 			if fade_in_enabled: 
 				fade_in = (pow(linstep(fade_in_start,fade_in_end,current_dist), 1.3)) * Rhythia.note_opacity
 			if fade_out_enabled:

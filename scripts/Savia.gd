@@ -422,6 +422,7 @@ func update_rpc_song(): # Discord RPC
 	if mod_nearsighted: mods.append("Nearsight")
 	if mod_hardrock: mods.append("Hard Rock")
 	if mod_360: mods.append(("360x%s" %Rhythia.mod_360_speed))
+	if mod_strobe: mods.append(("Strobe!!!"))
 	if replay.autoplayer: mods.append("Auto")
 	
 	if mods.size() == 0: txt = "No modifiers!!"
@@ -472,8 +473,9 @@ var mod_ghost:bool = false setget set_mod_ghost
 var mod_sudden_death:bool = false setget set_mod_sudden_death
 var mod_chaos:bool = false setget set_mod_chaos
 var mod_earthquake:bool = false setget set_mod_earthquake
-var mod_360:bool = true setget set_mod_360
+var mod_360:bool = false setget set_mod_360
 var mod_360_speed:float = 1 setget _set_mod_360_speed
+var mod_strobe:bool = false setget _set_mod_strobe
 var mod_hardrock:bool = false setget set_mod_hardrock
 # Modifiers - Custom values
 var start_offset:float = 0 setget _set_start_offset
@@ -532,6 +534,8 @@ func set_mod_360(v:bool):
 	mod_360 = v; emit_signal("mods_changed")
 func _set_mod_360_speed(v:float):
 	mod_360_speed = v; emit_signal("mods_changed")
+func _set_mod_strobe(v:bool):
+	mod_strobe = v; emit_signal("mods_changed")
 func set_mod_hardrock(v:bool):
 	mod_hardrock = v; emit_signal("mods_changed")
 # Mod setters - Custom values
@@ -857,6 +861,7 @@ func generate_pb_str(for_pb:bool=false):
 	if invert_mouse: pts.append("m_im")
 	if mod_earthquake: pts.append("m_earthquake")
 	if mod_360: pts.append("m_360")
+	if mod_strobe:pts.append("m_strobe")
 	if mod_hardrock: pts.append("m_hardrock")
 	if mod_nofail: pts.append("m_nofail") # for replays
 	
@@ -920,7 +925,7 @@ func parse_pb_str(txt:String):
 				"m_chaos": data.mod_chaos = true
 				"m_im": data.invert_mouse = true
 				"m_earthquake": data.mod_earthquake = true
-				"m_360": data.mod_360 = true
+				"m_strobe": data.mod_strobe = true
 				"m_hardrock": data.mod_hardrock = true
 				"m_nofail": data.mod_nofail = true
 	return data
@@ -987,7 +992,7 @@ func is_lacunella_enabled():
 		var ctxt = cdat.get_as_text()
 		if ctxt.to_upper() == "MEOW": return true
 	return false
-
+	
 # for max
 func memory_lacu():
 	var cdata = File.new()
@@ -996,7 +1001,27 @@ func memory_lacu():
 		var ctxt = cdata.get_as_text()
 		if ctxt.to_upper() == "DYAMO": return true
 	return false
+	
+func check_for_update_log():
+	var config = ConfigFile.new()
+	var err = config.load("user://settings.cfg")
+	
+	var current_version = ProjectSettings.get_setting("application/config/version")
+	
+	var last_seen_version = config.get_value("internal", "last_version", "0.0.0")
+	
+	if current_version != last_seen_version:
+		show_update_log(current_version)
+		
+		config.set_value("internal", "last_version", current_version)
+		config.save("user://settings.cfg")
 
+func show_update_log(ver):
+	Globals.notify(
+		Globals.NOTIFY_INFO, 
+		"Updated to " + ver + "!\n- Added Update Notifications\n- 360(duuhh)\n- arcw\n- Added Strobe!\n- Fixed Online maps(entierly)\n- Dylan Jarvis\n- Nullight\n- Brrecken's gay!", 
+		"What's New"
+	)
 # Settings save/load helpers
 func scol(c:Color) -> String:
 	return c.to_html(c.a != 1)
@@ -2065,6 +2090,11 @@ func do_init(_ud=null):
 				get_tree().call_deferred("quit",1)
 				OS.execute(OS.get_executable_path(),[],false)
 				return
+		var rdir = Directory.new()
+		rdir.open(OS.get_executable_path().get_base_dir())
+		if rdir.file_exists("Savia.pck.old"):
+			rdir.remove("Savia.pck.old")
+		
 	
 	emit_signal("init_stage_reached","Init filesystem")
 	emit_signal("init_stage_num",-1)
@@ -2468,4 +2498,5 @@ func do_init(_ud=null):
 		Globals.confirm_prompt.close()
 		yield(Globals.confirm_prompt,"done_closing")
 	is_init = false
+	check_for_update_log()
 	emit_signal("init_stage_reached","Waiting for menu",true)
