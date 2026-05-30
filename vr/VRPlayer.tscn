@@ -5,7 +5,6 @@
 [ext_resource path="res://vr/VRPlayer.gd" type="Script" id=3]
 [ext_resource path="res://vr/Pointer.gd" type="Script" id=4]
 
-
 [sub_resource type="Shader" id=83]
 code = "shader_type spatial;
 render_mode blend_mix,cull_back,diffuse_burley,specular_disabled,unshaded;
@@ -110,7 +109,7 @@ fov = 83.1628
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, -1, 0 )
 
 [node name="Mesh" type="MeshInstance" parent="Origin/LeftHand"]
-transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, -0.5 )
+transform = Transform( 0.04, 0, 0, 0, 0.04, 0, 0, 0, 0.12, 0, 0, 0.11 )
 mesh = ExtResource( 1 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 84 )
@@ -129,6 +128,7 @@ process_material = SubResource( 90 )
 draw_pass_1 = ExtResource( 1 )
 
 [node name="Ray" type="RayCast" parent="Origin/LeftHand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0714321 )
 cast_to = Vector3( 0, 0, -36 )
 collide_with_areas = true
 debug_shape_custom_color = Color( 0.490196, 0.388235, 0.337255, 0.0980392 )
@@ -148,7 +148,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, -1, 0 )
 controller_id = 2
 
 [node name="Mesh" type="MeshInstance" parent="Origin/RightHand"]
-transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, -0.5 )
+transform = Transform( 0.04, 0, 0, 0, 0.04, 0, 0, 0, 0.12, 0, 0, 0.11 )
 mesh = ExtResource( 1 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 84 )
@@ -167,6 +167,7 @@ process_material = SubResource( 90 )
 draw_pass_1 = ExtResource( 1 )
 
 [node name="Ray" type="RayCast" parent="Origin/RightHand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000290692, 0, 0.0813274 )
 cast_to = Vector3( 0, 0, -36 )
 collide_with_areas = true
 debug_shape_custom_color = Color( 0.572549, 0.87451, 1, 0.392157 )

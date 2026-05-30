@@ -61,9 +61,17 @@ font_data = ExtResource( 14 )
 
 [sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 13
+corner_radius_top_right = 13
+corner_radius_bottom_right = 13
+corner_radius_bottom_left = 13
 
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.560784, 0.560784, 0.560784, 0.690196 )
+corner_radius_top_left = 13
+corner_radius_top_right = 13
+corner_radius_bottom_right = 13
+corner_radius_bottom_left = 13
 
 [sub_resource type="DynamicFont" id=6]
 size = 48
@@ -86,6 +94,10 @@ corner_radius_bottom_left = 125
 
 [sub_resource type="StyleBoxFlat" id=8]
 bg_color = Color( 0.54902, 1, 0, 1 )
+corner_radius_top_left = 13
+corner_radius_top_right = 13
+corner_radius_bottom_right = 13
+corner_radius_bottom_left = 13
 
 [sub_resource type="DynamicFont" id=9]
 size = 36
@@ -181,9 +193,17 @@ font_data = ExtResource( 6 )
 
 [sub_resource type="StyleBoxFlat" id=15]
 bg_color = Color( 0.227451, 0.647059, 0.0823529, 1 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id=16]
 bg_color = Color( 0.580392, 0.129412, 0.129412, 0.686275 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="DynamicFont" id=90]
 size = 64

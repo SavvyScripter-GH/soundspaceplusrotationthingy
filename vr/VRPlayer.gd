@@ -34,8 +34,6 @@ func _ready():
 	set_process(true)
 	pause_mode = PAUSE_MODE_PROCESS
 
-
-
 func _process(delta):
 	if Input.is_action_just_pressed("vr_switch_hands"):
 		Rhythia.vr_left_handed = !Rhythia.vr_left_handed

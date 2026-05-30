@@ -96,8 +96,7 @@ func _generate_simple_id() -> String:
 const VERSION_SEQUENCE = [
 	"may23-2026-e", "may23-2026-f", "may23-2026-g", "may23-2026-h",
 	"may24-2026-a", "may24-2026-b", "may24-2026-c", "may24-2026-d", 
-	"may24-2026-e",
-	"may29-2026-a"
+	"may24-2026-e", "may29-2026-a", "may29-2026-b"
 ]
 
 const VERSION_NOTES = {
@@ -105,6 +104,7 @@ const VERSION_NOTES = {
 	"may24-2026-d": "- Online maps fixed",
 	"may24-2026-e": "- Backend Changes",
 	"may29-2026-a": "- Updated notification system logic\n- Added Alt volume wheel\n- Skip info\n- Added Elizondo the Third to testers\n- Added Nullight to testers\n- Re-enabled vr for testing",
+	"may29-2026-b": "- Vr testing"
 }
 
 func show_update_log(current_ver, old_ver):
@@ -347,7 +347,7 @@ func start_vr():
 	var viewport = get_viewport()
 	viewport.hdr = false
 	OS.vsync_enabled = false
-	Engine.target_fps = 120
+	Engine.target_fps = 720
 	
 	# Handle fake VR mode
 	if Input.is_key_pressed(KEY_SHIFT):

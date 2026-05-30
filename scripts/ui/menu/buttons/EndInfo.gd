@@ -53,7 +53,6 @@ func update_letter_grade(acc:float=0):
 	$LetterGrade.material.set_shader_param("shine",shine)
 	$LetterGrade.set("custom_colors/font_color",gcol)
 	
-	# make gcol more transparent
 	gcol.a = 0.1
 	$LetterGrade2.text = grade
 	$LetterGrade2.set("custom_colors/font_color",gcol)
@@ -119,56 +118,72 @@ func show_pb(_s=null):
 			$MaxCombo.text = "-\n"
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"show_pb")
-	Rhythia.connect("mods_changed",self,"show_pb")
-	yield(Rhythia,"map_list_ready")
-	if !Rhythia.selected_song: return
+	Rhythia.connect("selected_song_changed", self, "show_pb")
+	Rhythia.connect("mods_changed", self, "show_pb")
+	
+	yield(Rhythia, "map_list_ready")
+	
+	if !Rhythia.selected_song: 
+		return
+
 	$NewBest.stream = Rhythia.pb_snd
 	if $NewBest.stream != Rhythia.normal_pb_sound:
 		$NewBest.pitch_scale = 1
+		
 	visible = Rhythia.just_ended_song
+	
 	if Rhythia.just_ended_song:
-		var is_best:bool = Rhythia.do_pb_check_and_set()
-		if is_best: $NewBest.play()
-		if Rhythia.song_end_type == Globals.END_PASS:
-			if Rhythia.was_replay: $Result.text = "Replay passed"
-			elif is_best: $Result.text = "New best!"
-			else: $Result.text = "You passed!"
-			$Result.set("custom_colors/font_color",Color("#6ff1ff"))
-		elif Rhythia.was_replay: $Result.text = "Replay failed"
-		elif is_best:
-			$Result.text = "You failed (new best!)"
-			$Result.set("custom_colors/font_color",Color("#ea4aca"))
-		else: $Result.text = "You failed!"
-		
-		
-		$FullCombo.visible = Rhythia.song_end_misses == 0 && Rhythia.song_end_type == Globals.END_PASS
-		$Misses.visible = !Rhythia.song_end_misses == 0 || !Rhythia.song_end_type == Globals.END_PASS
-		$Misses.text = comma_sep(Rhythia.song_end_misses)
-		
-		$NoPauses.visible = Rhythia.song_end_pause_count == 0
-		$Pauses.visible = !Rhythia.song_end_pause_count == 0
-		$Pauses.text = comma_sep(Rhythia.song_end_pause_count)
-
-		$Accuracy.text = "%s/%s\n%.03f%%" % [
-			comma_sep(Rhythia.song_end_hits),
-			comma_sep(Rhythia.song_end_total_notes),
-			(float(Rhythia.song_end_hits)/float(Rhythia.song_end_total_notes))*100
-		]
-		
-
-		if Rhythia.song_end_combo < Rhythia.selected_song.note_count:
-			$MaxCombo.text = comma_sep(Rhythia.song_end_combo)
-		elif Rhythia.song_end_combo == Rhythia.selected_song.note_count:
-			$MaxCombo.text = "FULL COMBO"
-		else:
-			$MaxCombo.text = "NO COMBO"
-		$MaxCombo.text += "\n"
-		
-		update_letter_grade(float(Rhythia.song_end_hits)/float(Rhythia.song_end_total_notes))
-		$Progress.text = "%s\n%.1f%%" % [Rhythia.song_end_time_str,clamp(Rhythia.song_end_position/Rhythia.song_end_length,0,1)*100]
+		_handle_post_game_results()
 	else:
 		show_pb()
+		
 	Rhythia.just_ended_song = false
-	var list = $"/root/Menu/Main/Maps/MapRegistry/S/VBoxContainer"
-	list.switch_to_play_screen()
+	
+	call_deferred("_transition_to_list")
+
+func _transition_to_list():
+	var list = get_node_or_null("/root/Menu/Main/Maps/MapRegistry/S/VBoxContainer")
+	if list:
+		list.switch_to_play_screen()
+
+func _handle_post_game_results():
+	var is_best:bool = Rhythia.do_pb_check_and_set()
+	if is_best: $NewBest.play()
+	
+	if Rhythia.song_end_type == Globals.END_PASS:
+		if Rhythia.was_replay: $Result.text = "Replay passed"
+		elif is_best: $Result.text = "New best!"
+		else: $Result.text = "You passed!"
+		$Result.set("custom_colors/font_color", Color("#6ff1ff"))
+	elif Rhythia.was_replay: 
+		$Result.text = "Replay failed"
+	elif is_best:
+		$Result.text = "You failed (new best!)"
+		$Result.set("custom_colors/font_color", Color("#ea4aca"))
+	else: 
+		$Result.text = "You failed!"
+	
+	$FullCombo.visible = Rhythia.song_end_misses == 0 && Rhythia.song_end_type == Globals.END_PASS
+	$Misses.visible = !Rhythia.song_end_misses == 0 || !Rhythia.song_end_type == Globals.END_PASS
+	$Misses.text = comma_sep(Rhythia.song_end_misses)
+	
+	$NoPauses.visible = Rhythia.song_end_pause_count == 0
+	$Pauses.visible = !Rhythia.song_end_pause_count == 0
+	$Pauses.text = comma_sep(Rhythia.song_end_pause_count)
+
+	$Accuracy.text = "%s/%s\n%.03f%%" % [
+		comma_sep(Rhythia.song_end_hits),
+		comma_sep(Rhythia.song_end_total_notes),
+		(float(Rhythia.song_end_hits)/float(Rhythia.song_end_total_notes))*100
+	]
+
+	if Rhythia.song_end_combo < Rhythia.selected_song.note_count:
+		$MaxCombo.text = comma_sep(Rhythia.song_end_combo)
+	elif Rhythia.song_end_combo == Rhythia.selected_song.note_count:
+		$MaxCombo.text = "FULL COMBO"
+	else:
+		$MaxCombo.text = "NO COMBO"
+	$MaxCombo.text += "\n"
+	
+	update_letter_grade(float(Rhythia.song_end_hits)/float(Rhythia.song_end_total_notes))
+	$Progress.text = "%s\n%.1f%%" % [Rhythia.song_end_time_str, clamp(Rhythia.song_end_position/Rhythia.song_end_length,0,1)*100]

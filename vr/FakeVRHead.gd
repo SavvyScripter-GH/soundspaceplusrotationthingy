@@ -10,8 +10,17 @@ func _input(event):
 	if active:
 		if (event is InputEventMouseMotion) or (event is InputEventScreenDrag):
 			yaw = fmod(yaw - event.relative.x * Rhythia.sensitivity * 0.2, 360)
-			pitch = max(min(pitch - event.relative.y * Rhythia.sensitivity * 0.2, 89), -89)
-			get_parent().rotation = Vector3(deg2rad(pitch), deg2rad(yaw), 0)
+			pitch = clamp(
+				pitch - event.relative.y * Rhythia.sensitivity * 0.2,
+				-59, # -89 + 30
+				119  # 89 + 30
+			)
+
+			get_parent().rotation = Vector3(
+				deg2rad(pitch - 30),
+				deg2rad(yaw),
+				0
+			)
 
 func _process(delta):
 #	if Rhythia.fake_vr:

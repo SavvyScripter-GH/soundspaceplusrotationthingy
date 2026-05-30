@@ -14,7 +14,7 @@
 [sub_resource type="SpatialMaterial" id=60]
 flags_unshaded = true
 
-[sub_resource type="Shader" id=84]
+[sub_resource type="Shader" id=127]
 code = "shader_type spatial;
 render_mode blend_mix,cull_back,diffuse_burley,specular_disabled,unshaded;
 uniform vec4 notecolor : hint_color = vec4(1,1,1,1);
@@ -42,13 +42,13 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=58]
 render_priority = 112
-shader = SubResource( 84 )
+shader = SubResource( 127 )
 shader_param/notecolor = Color( 1, 1, 1, 1 )
 shader_param/alpha_multi = 1.0
 shader_param/fade = 1.0
 shader_param/use_image = false
 
-[sub_resource type="Shader" id=57]
+[sub_resource type="Shader" id=128]
 code = "shader_type spatial;
 render_mode blend_mix,cull_back,diffuse_burley,specular_disabled,unshaded;
 uniform vec4 notecolor : hint_color = vec4(1,1,1,1);
@@ -76,7 +76,7 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=59]
 render_priority = 110
-shader = SubResource( 57 )
+shader = SubResource( 128 )
 shader_param/notecolor = Color( 0, 0, 0, 1 )
 shader_param/alpha_multi = 1.0
 shader_param/fade = 1.0
@@ -104,12 +104,12 @@ surfaces/0 = {
 offsets = PoolRealArray( 0.00621118, 0.534162 )
 colors = PoolColorArray( 0.382813, 0, 1, 1, 0, 0, 0, 1 )
 
-[sub_resource type="GradientTexture" id=111]
+[sub_resource type="GradientTexture" id=129]
 gradient = SubResource( 110 )
 
 [sub_resource type="SpatialMaterial" id=112]
 flags_unshaded = true
-albedo_texture = SubResource( 111 )
+albedo_texture = SubResource( 129 )
 
 [sub_resource type="ArrayMesh" id=113]
 surfaces/0 = {
@@ -128,12 +128,12 @@ surfaces/0 = {
 offsets = PoolRealArray( 0, 0.534162 )
 colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 1 )
 
-[sub_resource type="GradientTexture" id=86]
+[sub_resource type="GradientTexture" id=130]
 gradient = SubResource( 114 )
 
 [sub_resource type="SpatialMaterial" id=115]
 flags_unshaded = true
-albedo_texture = SubResource( 86 )
+albedo_texture = SubResource( 130 )
 
 [sub_resource type="SpatialMaterial" id=116]
 flags_unshaded = true
@@ -166,7 +166,7 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id=119]
+[sub_resource type="ShaderMaterial" id=131]
 render_priority = 112
 shader = SubResource( 80 )
 shader_param/notecolor = Color( 1, 1, 1, 1 )
@@ -175,7 +175,7 @@ shader_param/fade = 1.0
 shader_param/use_image = false
 
 [sub_resource type="PrismMesh" id=118]
-material = SubResource( 119 )
+material = SubResource( 131 )
 left_to_right = 1.0
 size = Vector3( 2, 2, 1 )
 
@@ -183,23 +183,23 @@ size = Vector3( 2, 2, 1 )
 offsets = PoolRealArray( 1 )
 colors = PoolColorArray( 0.581543, 0.572456, 0.572456, 1 )
 
-[sub_resource type="GradientTexture" id=122]
+[sub_resource type="GradientTexture" id=132]
 gradient = SubResource( 121 )
 
 [sub_resource type="SpatialMaterial" id=123]
 flags_unshaded = true
-albedo_texture = SubResource( 122 )
+albedo_texture = SubResource( 132 )
 
 [sub_resource type="Gradient" id=124]
 offsets = PoolRealArray( 1 )
 colors = PoolColorArray( 0.803922, 0.482353, 0.858824, 1 )
 
-[sub_resource type="GradientTexture" id=125]
+[sub_resource type="GradientTexture" id=133]
 gradient = SubResource( 124 )
 
 [sub_resource type="SpatialMaterial" id=126]
 flags_unshaded = true
-albedo_texture = SubResource( 125 )
+albedo_texture = SubResource( 133 )
 
 [sub_resource type="ArrayMesh" id=68]
 surfaces/0 = {
@@ -533,7 +533,7 @@ tracks/5/keys = {
 offsets = PoolRealArray( 0, 0.503226, 1 )
 colors = PoolColorArray( 0, 0.705882, 1, 0, 0.465705, 0.34611, 1, 1, 0.913725, 0, 1, 0 )
 
-[sub_resource type="GradientTexture" id=95]
+[sub_resource type="GradientTexture" id=134]
 gradient = SubResource( 94 )
 
 [sub_resource type="ParticlesMaterial" id=96]
@@ -544,9 +544,9 @@ gravity = Vector3( 0, 0, 0 )
 initial_velocity = 0.15
 scale = 0.25
 color = Color( 1, 1, 1, 0.0156863 )
-color_ramp = SubResource( 95 )
+color_ramp = SubResource( 134 )
 
-[sub_resource type="SpatialMaterial" id=97]
+[sub_resource type="SpatialMaterial" id=135]
 flags_transparent = true
 flags_unshaded = true
 flags_vertex_lighting = true
@@ -559,7 +559,7 @@ particles_anim_loop = false
 albedo_color = Color( 1, 1, 1, 0.196078 )
 
 [sub_resource type="SphereMesh" id=98]
-material = SubResource( 97 )
+material = SubResource( 135 )
 radial_segments = 4
 rings = 4
 

@@ -1,43 +1,82 @@
 extends LineEdit
 
-func update_txt(_v=null):
-	get_parent().get_parent().get_node("S/VBoxContainer").update_search_text(text)
-	Rhythia.last_search_str = text
+var _filter_container: Node = null
+var _ignore_nodes: Array = []
 
 func _ready():
-	connect("text_changed",self,"update_txt")
+	_filter_container = get_node_or_null("../../S/VBoxContainer")
+	
+	_setup_nodes()
+	
 	text = Rhythia.last_search_str
 	update_txt()
-	get_parent().get_parent().get_node("S/VBoxContainer").connect("reset_filters",self,"_on_reset_filters")
-	get_parent().get_parent().get_node("S/VBoxContainer").connect("lock_type",self,"_on_lock_type")
-	get_parent().get_parent().get_parent().get_node("Results/Results/RS/H1/Info/Run").connect("lock_type",self,"_on_lock_type")
+	
+	connect("text_changed", self, "update_txt")
+	
+	if _filter_container:
+		_filter_container.connect("reset_filters", self, "_on_reset_filters")
+		_filter_container.connect("lock_type", self, "_on_lock_type")
+	
+	var run_node = get_node_or_null("../../../Results/Results/RS/H1/Info/Run")
+	if run_node:
+		run_node.connect("lock_type", self, "_on_lock_type")
+
+func _setup_nodes():
+	var root_path = "/root/Menu/Main/Maps/"
+	if Rhythia.vr:
+		root_path = "/root/VRMenuHolder/PointerScreen/Viewport/Menu/Main/Maps/"
+	
+	var paths = [
+		root_path + "MapRegistry/T/AuthorSearch",
+		root_path + "Results/Results/RS/H2/Mods/SpeedMod/C/CustomSpeed",
+		root_path + "Results/Results/RS/H2/Mods/StartOffset/TimeTextBox",
+		root_path + "Results/Results/RS/H2/Mods/360Speed/SpeedTextBox"
+	]
+	
+	for p in paths:
+		var node = get_node_or_null(p)
+		if node:
+			if node.has_method("get_line_edit"):
+				_ignore_nodes.append(node.get_line_edit())
+			else:
+				_ignore_nodes.append(node)
+
+func update_txt(_v=null):
+	if _filter_container and _filter_container.has_method("update_search_text"):
+		_filter_container.update_search_text(text)
+	
+	Rhythia.last_search_str = text
 
 func _on_reset_filters():
 	text = ""
 	update_txt()
 
 func _on_lock_type():
-	#prevent input
 	set_editable(false)
 
-func _input(event): # any unicode input starts search
-	# remain the ability to type in other textboxes i wonder if you can tell if type focus is happening
-	if get_focus_owner() == self: return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/MapRegistry/T/AuthorSearch": return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/Results/Results/RS/H2/Mods/SpeedMod/C/CustomSpeed".get_line_edit(): return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/Results/Results/RS/H2/Mods/StartOffset/TimeTextBox": return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/Results/Results/RS/H2/Mods/360Speed/SpeedTextBox": return
+func _input(event):
+	if not is_visible_in_tree() or not editable: 
+		return
+
+	var current_focus = get_focus_owner()
 	
-	if not is_visible_in_tree(): return
+	if current_focus == self: 
+		return
+		
+	for node in _ignore_nodes:
+		if current_focus == node: 
+			return
+
 	if event is InputEventKey and event.is_pressed():
-		#if space return so you can use space to play map
-		if event.scancode == KEY_SPACE: return
+		if event.scancode == KEY_SPACE: 
+			return
+			
 		if event.scancode == KEY_BACKSPACE:
-			if len(text) == 0: return
-			else: 
+			if len(text) > 0:
 				clear()
 				grab_focus()
+			return
+			
 		var unicode = event.get_unicode()
 		if unicode != 0:
 			grab_focus()
-			
